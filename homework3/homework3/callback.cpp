@@ -1,9 +1,17 @@
-#include "callback.h"
+ï»¿#include "callback.h"
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	// µ±ÓÃ»§°´ÏÂESC¼ü,ÎÒÃÇÉèÖÃwindow´°¿ÚµÄWindowShouldCloseÊôĞÔÎªtrue
-	// ¹Ø±ÕÓ¦ÓÃ³ÌĞò
+	// å½“ç”¨æˆ·æŒ‰ä¸‹ESCé”®,æˆ‘ä»¬è®¾ç½®windowçª—å£çš„WindowShouldCloseå±æ€§ä¸ºtrue
+	// å…³é—­åº”ç”¨ç¨‹åº
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_L && action == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		std::cout << "glPolygonMode :: Line" << std::endl;
+	}
+	if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		std::cout << "glPolygonMode :: FILL" << std::endl;
+	}
 }

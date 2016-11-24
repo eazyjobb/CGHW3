@@ -1,38 +1,38 @@
-#include "global_utility.h"
+ï»¿#include "global_utility.h"
 
 GLFWwindow* window;
 
 int main()
 {
 
-	//³õÊ¼»¯
-	if (full_initial(window, 1200, 600) == INIT_ERROR) {
+	//åˆå§‹åŒ–
+	if (full_initial(window, 1000, 1000) == INIT_ERROR) {
 		system("pause");
-		//³õÊ¼»¯Ê§°Ü£¬ÊÍ·ÅÄÚ´æ
+		//åˆå§‹åŒ–å¤±è´¥ï¼Œé‡Šæ”¾å†…å­˜
 		glfwTerminate();
 		return -1;
 	}
 
-	//ÏûÏ¢Ñ­»·
+	//æ¶ˆæ¯å¾ªç¯
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		//Çå¿Õ»­²¼
+		//æ¸…ç©ºç”»å¸ƒ
 		//GL_DEPTH_BUFFER_BIT GL_STENCIL_BUFFER_BIT
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//äÖÈ¾
+		//æ¸²æŸ“
 
 		tester1::tester1_refresh();
 
-		//½»»»»º³åÇøÓò
+		//äº¤æ¢ç¼“å†²åŒºåŸŸ
 		glfwSwapBuffers(window);
 	}
 
-	//½áÊø£¬ÊÍ·ÅÄÚ´æ
+	//ç»“æŸï¼Œé‡Šæ”¾å†…å­˜
 	glfwTerminate();
 
 	return 0;

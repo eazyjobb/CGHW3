@@ -1,8 +1,8 @@
-#include "global_utility.h"
+ï»¿#include "global_utility.h"
 
 int full_initial(GLFWwindow* &window, int _width, int _height) {
 	/*
-	´°¿Ú³õÊ¼»¯
+	çª—å£åˆå§‹åŒ–
 	*/
 
 	glfwInit();
@@ -27,7 +27,7 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	glfwMakeContextCurrent(window);
 
 	/*
-	GLEW ³õÊ¼»¯
+	GLEW åˆå§‹åŒ–
 	*/
 
 	glewExperimental = GL_TRUE;
@@ -38,13 +38,13 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	}
 
 	/*
-	»Øµ÷º¯Êı°ó¶¨
+	å›è°ƒå‡½æ•°ç»‘å®š
 	*/
 
 	glfwSetKeyCallback(window, key_callback);
 
 	/*
-		ËØ²Ä¶ÁÈë
+		ç´ æè¯»å…¥
 	*/
 
 	tester1::tester1_init();

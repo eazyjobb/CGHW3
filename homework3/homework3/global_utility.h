@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #define GLEW_STATIC
 #include "std_header.h"
@@ -9,9 +9,9 @@
 
 /*
 	int full_initial(GLFWwindow* &window, int _width, int _height)
-		ĞÂ½¨´°¿Ú£¬ÔØÈëËØ²Ä
+		æ–°å»ºçª—å£ï¼Œè½½å…¥ç´ æ
 
-		return 0 ³É¹¦
-		return -1 Ê§°Ü
+		return 0 æˆåŠŸ
+		return -1 å¤±è´¥
 */
 int full_initial(GLFWwindow* &window, int _width, int _height);
