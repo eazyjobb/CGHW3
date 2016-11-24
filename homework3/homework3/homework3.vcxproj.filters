@@ -15,12 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="h3.h">
+    <ClInclude Include="callback.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="data_binding.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="global_utility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="std_header.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="callback.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="global_utility.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="data_binding.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
