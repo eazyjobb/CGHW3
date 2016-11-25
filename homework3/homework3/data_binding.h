@@ -3,8 +3,8 @@
 #include "std_header.h"
 #include "shader.h"
 
-namespace tester1 {
-
+namespace tester1
+{
 	const static GLfloat vertices[] = {
 		0.5f, 0.5f, 0.0f,   // 右上角
 		0.5f, -0.5f, 0.0f,  // 右下角
@@ -19,6 +19,33 @@ namespace tester1 {
 
 	extern GLuint EBO, VBO, VAO;
 
-	void tester1_init();
-	void tester1_refresh();
-};
+	void init();
+	void refresh();
+}
+
+namespace tester2
+{
+	const static GLfloat vertices[] = {
+		// 位置              // 颜色
+		0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // 右下
+		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // 左下
+		0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // 顶部
+	};
+
+	extern GLuint VBO, VAO;
+	void init();
+	void refresh();
+}
+
+namespace uni_tester
+{
+	const static GLfloat vertices[] = {
+		0.5f, -0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		0.0f,  0.5f, 0.0f,
+	};
+
+	extern GLuint VBO, VAO;
+	void init();
+	void refresh();
+}

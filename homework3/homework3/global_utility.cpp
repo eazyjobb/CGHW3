@@ -50,7 +50,9 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	if (shader_namespace::shader_init())
 		return -1;
 
-	tester1::tester1_init();
+	//tester1::init();
+	//tester2::init();
+	uni_tester::init();
 
 	return 0;
 }

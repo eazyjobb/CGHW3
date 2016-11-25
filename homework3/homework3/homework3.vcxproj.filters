@@ -49,14 +49,28 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="shader_list.txt">
+    <Text Include="resources\shaders\fragment2.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="sample_vertex_shader.txt">
+    <Text Include="resources\shaders\sample_fragment_shader.txt">
       <Filter>资源文件</Filter>
     </Text>
-    <Text Include="sample_fragment_shader.txt">
+    <Text Include="resources\shaders\sample_vertex_shader.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="resources\shaders\shader_list.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="resources\shaders\uni_fragment.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="resources\shaders\vertex2.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\wall.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

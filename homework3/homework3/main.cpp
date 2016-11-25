@@ -26,7 +26,9 @@ int main()
 
 		//渲染
 
-		tester1::tester1_refresh();
+		//tester1::refresh();
+		//tester2::refresh();
+		uni_tester::refresh();
 
 		//交换缓冲区域
 		glfwSwapBuffers(window);

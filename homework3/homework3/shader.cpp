@@ -1,11 +1,12 @@
 ﻿#include "shader.h"
 
 namespace shader_namespace {
+	std::string shader_path = "resources/shaders/";
 	std::unordered_map <std::string, GLuint> vertex_list, fragment_list;
 	std::unordered_map <std::string, shader> shader_list;
 
 	int shader_init() {
-		std::ifstream lin("shader_list.txt");
+		std::ifstream lin(shader_path + "shader_list.txt");
 		if (false == lin.is_open()) {
 			std::cout << "ERROR::SHADER::OPEN_LIST_FAILED" << std::endl;
 			return -1;
@@ -58,7 +59,7 @@ namespace shader_namespace {
 			glDeleteShader(i.second);
 		vertex_list.clear();
 		fragment_list.clear();
-		
+
 		return 0;
 	}
 
@@ -76,7 +77,7 @@ namespace shader_namespace {
 				return -1;
 			}
 
-			std::ifstream vShaderFile(str + ".txt");
+			std::ifstream vShaderFile(shader_path + str + ".txt");
 			std::stringstream vs;
 
 			if (false == vShaderFile.is_open()) {
@@ -120,7 +121,7 @@ namespace shader_namespace {
 				return -1;
 			}
 
-			std::ifstream fShaderFile(str + ".txt");
+			std::ifstream fShaderFile(shader_path + str + ".txt");
 			std::stringstream fs;
 
 			if (false == fShaderFile.is_open()) {
@@ -172,4 +173,4 @@ namespace shader_namespace {
 
 		std::cout << vertex_index << ' ' << fragment_index << std::endl;
 	}
-};
+}
