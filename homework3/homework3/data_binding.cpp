@@ -2,7 +2,7 @@
 
 namespace tester1
 {
-	GLuint EBO, VBO, VAO, shaderProgram, fragmentShader, vertexShader;
+	GLuint EBO, VBO, VAO;
 
 	void tester1_init() {
 		glGenBuffers(1, &VBO);
