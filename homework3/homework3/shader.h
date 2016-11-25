@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "std_header.h"
 #include "global_utility.h"
 

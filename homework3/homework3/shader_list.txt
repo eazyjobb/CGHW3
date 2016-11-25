@@ -1,4 +1,4 @@
-vertex 1
+﻿vertex 1
 sample_vertex_shader
 fragment 1
 sample_fragment_shader

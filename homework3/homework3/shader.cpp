@@ -1,4 +1,4 @@
-#include "shader.h"
+ï»¿#include "shader.h"
 
 namespace shader_namespace {
 	std::unordered_map <std::string, GLuint> vertex_list, fragment_list;
@@ -50,7 +50,7 @@ namespace shader_namespace {
 		lin.close();
 
 		/*
-			ÊÍ·ÅÄÚ´æ
+			é‡Šæ”¾å†…å­˜
 		*/
 		for (auto & i : vertex_list)
 			glDeleteShader(i.second);
