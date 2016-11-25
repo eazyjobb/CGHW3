@@ -1,0 +1,6 @@
+vertex 1
+sample_vertex_shader
+fragment 1
+sample_fragment_shader
+program 1
+sample_program|sample_vertex_shader|sample_fragment_shader

@@ -4,12 +4,12 @@ GLFWwindow* window;
 
 int main()
 {
-
+	//std::ios::sync_with_stdio(false);
 	//初始化
-	if (full_initial(window, 1000, 1000) == INIT_ERROR) {
-		system("pause");
-		//初始化失败，释放内存
+	if (full_initial(window, 1000, 1000) == -1) {
+		std::cout << "INITIAL FAILED" << std::endl;
 		glfwTerminate();
+		system("pause");
 		return -1;
 	}
 

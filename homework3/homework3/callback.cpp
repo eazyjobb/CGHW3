@@ -12,6 +12,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_F && action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		std::cout << "glPolygonMode :: FILL" << std::endl;
+		std::cout << "glPolygonMode :: Fill" << std::endl;
 	}
 }

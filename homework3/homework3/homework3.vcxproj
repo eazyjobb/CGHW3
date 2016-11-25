@@ -132,6 +132,7 @@
     <ClInclude Include="callback.h" />
     <ClInclude Include="data_binding.h" />
     <ClInclude Include="global_utility.h" />
+    <ClInclude Include="shader.h" />
     <ClInclude Include="std_header.h" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +140,12 @@
     <ClCompile Include="data_binding.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="global_utility.cpp" />
+    <ClCompile Include="shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="shader_list.txt" />
+    <Text Include="sample_vertex_shader.txt" />
+    <Text Include="sample_fragment_shader.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

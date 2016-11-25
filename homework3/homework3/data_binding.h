@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "std_header.h"
+#include "shader.h"
 
 namespace tester1 {
 
@@ -16,7 +17,7 @@ namespace tester1 {
 		1, 2, 3  // 第二个三角形
 	};
 
-	static GLuint EBO, VBO, VAO, shaderProgram, fragmentShader, vertexShader;
+	extern GLuint EBO, VBO, VAO, shaderProgram, fragmentShader, vertexShader;
 
 	const static char * vertexShaderSource = "\n\
 		#version 330 core\n\
