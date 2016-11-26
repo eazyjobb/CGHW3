@@ -69,6 +69,7 @@ namespace texture_tester {
 	};
 
 	extern GLuint EBO, VBO, VAO;
+	extern float ratio;
 
 	void init();
 	void refresh();

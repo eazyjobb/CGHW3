@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "std_header.h"
+#include "data_binding.h"
 
 /*
 	键盘回调函数

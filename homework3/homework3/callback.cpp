@@ -16,4 +16,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		std::cout << "glPolygonMode :: Fill" << std::endl;
 	}
+	if (key == GLFW_KEY_UP && action == GLFW_PRESS) {
+		texture_tester::ratio = std::min(1.0f, texture_tester::ratio + 0.05f);
+	}
+	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
+		texture_tester::ratio = std::max(0.0f, texture_tester::ratio - 0.05f);
+	}
 }

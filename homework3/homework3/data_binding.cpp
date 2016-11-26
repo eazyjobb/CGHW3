@@ -111,6 +111,7 @@ namespace uni_tester {
 
 namespace texture_tester {
 	GLuint VAO, VBO, EBO;
+	float ratio = 0.5;
 
 	void init() {
 		glGenBuffers(1, &VBO);
@@ -133,16 +134,31 @@ namespace texture_tester {
 
 	void refresh() {
 		auto ptr = shader::shader_list.find("texture_test");
-		if (ptr != shader::shader_list.end())
+		if (ptr != shader::shader_list.end()) {
 			ptr->second.use();
 
-		auto texture_ptr = texture::texture2D_list.find("container.jpg");
-		if (texture_ptr != texture::texture2D_list.end())
-			glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
+			glActiveTexture(GL_TEXTURE0);
+			auto texture_ptr = texture::texture2D_list.find("container.jpg");
+			if (texture_ptr != texture::texture2D_list.end()) {
+				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
+				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture1"), 0);
+			}
+
+			glActiveTexture(GL_TEXTURE1);
+			texture_ptr = texture::texture2D_list.find("awesomeface.png");
+			if (texture_ptr != texture::texture2D_list.end()) {
+				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
+				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture2"), 1);
+			}
+
+			glUniform1f(glGetUniformLocation(ptr->second.program,"ratio"), ratio);
+		}
 
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void release() {
