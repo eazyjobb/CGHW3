@@ -28,11 +28,17 @@ int main()
 
 		//tester1::refresh();
 		//tester2::refresh();
-		uni_tester::refresh();
+		//uni_tester::refresh();
+		texture_tester::refresh();
 
 		//交换缓冲区域
 		glfwSwapBuffers(window);
 	}
+
+	//tester1::release();
+	//tester2::release();
+	//uni_tester::release();
+	texture_tester::release();
 
 	//结束，释放内存
 	glfwTerminate();

@@ -6,6 +6,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	// 关闭应用程序
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
 	if (key == GLFW_KEY_L && action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		std::cout << "glPolygonMode :: Line" << std::endl;

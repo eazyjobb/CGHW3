@@ -1,11 +1,14 @@
-vertex 2
+vertex 3
 sample_vertex_shader
 vertex2
-fragment 3
+texture_test_vertex
+fragment 4
 sample_fragment_shader
 fragment2
 uni_fragment
-program 3
+texture_test_fragment
+program 4
 sample_program|sample_vertex_shader|sample_fragment_shader
 tester2|vertex2|fragment2
 uni_test|sample_vertex_shader|uni_fragment
+texture_test|texture_test_vertex|texture_test_fragment

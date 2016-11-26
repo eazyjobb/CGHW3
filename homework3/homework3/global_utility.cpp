@@ -47,12 +47,16 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 		素材读入
 	*/
 
-	if (shader_namespace::shader_init())
+	if (shader::shader_init())
+		return -1;
+
+	if (texture::texture_init())
 		return -1;
 
 	//tester1::init();
 	//tester2::init();
-	uni_tester::init();
+	//uni_tester::init();
+	texture_tester::init();
 
 	return 0;
 }

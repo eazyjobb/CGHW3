@@ -1,6 +1,6 @@
 ﻿#include "shader.h"
 
-namespace shader_namespace {
+namespace shader {
 	std::string shader_path = "resources/shaders/";
 	std::unordered_map <std::string, GLuint> vertex_list, fragment_list;
 	std::unordered_map <std::string, shader> shader_list;

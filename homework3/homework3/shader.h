@@ -2,7 +2,7 @@
 #include "std_header.h"
 #include "global_utility.h"
 
-namespace shader_namespace
+namespace shader
 {
 	extern std::string shader_path;
 
