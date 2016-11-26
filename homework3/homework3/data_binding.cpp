@@ -152,6 +152,13 @@ namespace texture_tester {
 			}
 
 			glUniform1f(glGetUniformLocation(ptr->second.program,"ratio"), ratio);
+
+			glm::mat4 trans;
+			trans = glm::rotate(trans, (GLfloat)(glfwGetTime() * glm::radians(50.0)), glm::vec3(0.0f, 0.0f, 1.0f));
+			trans = glm::translate(trans, glm::vec3(cos((GLfloat)glfwGetTime())/3.0f, sin((GLfloat)glfwGetTime())/3.0f, 0.0f));
+
+			GLuint transformLoc = glGetUniformLocation(ptr->second.program, "trans");
+			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 		}
 
 		glBindVertexArray(VAO);

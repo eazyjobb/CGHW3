@@ -6,7 +6,7 @@ int main()
 {
 	//std::ios::sync_with_stdio(false);
 	//初始化
-	if (full_initial(window, 1000, 1000) == -1) {
+	if (full_initial(window, 800, 600) == -1) {
 		std::cout << "INITIAL FAILED" << std::endl;
 		glfwTerminate();
 		system("pause");
