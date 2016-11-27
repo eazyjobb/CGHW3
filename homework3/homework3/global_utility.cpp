@@ -37,6 +37,8 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 		return -1;
 	}
 
+	glEnable(GL_DEPTH_TEST);
+
 	/*
 	回调函数绑定
 	*/
@@ -53,10 +55,13 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	if (texture::texture_init())
 		return -1;
 
+	if (coord::coord_init())
+		return -1;
 	//tester1::init();
 	//tester2::init();
 	//uni_tester::init();
-	texture_tester::init();
+	//texture_tester::init();
+	coord_tester::init();
 
 	return 0;
 }

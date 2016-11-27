@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="callback.h" />
+    <ClInclude Include="coord.h" />
     <ClInclude Include="data_binding.h" />
     <ClInclude Include="global_utility.h" />
     <ClInclude Include="shader.h" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="callback.cpp" />
+    <ClCompile Include="coord.cpp" />
     <ClCompile Include="data_binding.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="global_utility.cpp" />
@@ -149,6 +151,14 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="resources\shaders\coord_frag.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Text>
+    <Text Include="resources\shaders\coord_vertex.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Text>
     <Text Include="resources\shaders\fragment2.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
