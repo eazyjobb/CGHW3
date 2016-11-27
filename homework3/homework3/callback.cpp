@@ -25,6 +25,11 @@ namespace callback {
 			mouse_keys[key] = false;
 	}
 
+	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+	{
+		coord::camera_fov((GLfloat)-yoffset);
+	}
+
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		if (first_mouse)
@@ -42,8 +47,8 @@ namespace callback {
 		if (false == mouse_keys[GLFW_MOUSE_BUTTON_RIGHT])
 			return;
 		
-		xoffset *= coord::cameraSensitivity;
-		yoffset *= coord::cameraSensitivity;
+		xoffset *= coord::cameraSensitivityX;
+		yoffset *= coord::cameraSensitivityY;
 
 		coord::camera_rotate(xoffset, yoffset);
 	}

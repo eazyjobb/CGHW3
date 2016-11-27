@@ -17,4 +17,5 @@ namespace callback {
 	void mouse_button_callback(GLFWwindow* window, int key, int action, int mode);
 	void handle_events(GLFWwindow*);
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 }

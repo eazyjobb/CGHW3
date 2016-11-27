@@ -3,20 +3,18 @@
 namespace coord {
 	glm::mat4 view, projection;
 	glm::vec3 cameraPos, cameraFront, cameraUp, cameraRight;
-	GLfloat yaw, pitch;
+	GLfloat yaw, pitch, fov;
 
 	int coord_init() {
+		fov = 20.0f;
 		yaw = -90.0f;
 		pitch = 0.0f;
 
 		cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-		cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-		cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-		cameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
 
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		refresh_camera();
 
-		projection = glm::perspective((GLfloat)glm::radians(45.0), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
+		projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
 
 		return 0;
 	}
@@ -30,6 +28,16 @@ namespace coord {
 		if (coord::pitch < -89.0f)
 			coord::pitch = -89.0f;
 		refresh_camera();
+	}
+
+	void camera_fov(GLfloat delta_fov)
+	{
+		fov += delta_fov;
+		if (fov <= 1.0f)
+			fov = 1.0f;
+		if (fov >= 45.0f)
+			fov = 45.0f;
+		coord::projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
 	}
 
 	void camera_front(GLfloat movement) {
@@ -53,6 +61,7 @@ namespace coord {
 	}
 
 	void refresh_view() {
+		//std::cout << cameraFront.x << ' ' << cameraFront.y << ' ' << cameraFront.z << std::endl;
 		coord::view = glm::lookAt(coord::cameraPos, coord::cameraPos + coord::cameraFront, coord::cameraUp);
 	}
 

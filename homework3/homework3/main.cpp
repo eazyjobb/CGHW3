@@ -40,8 +40,7 @@ int main()
 		//交换缓冲区域
 		glfwSwapBuffers(window);
 
-		while ((time_system::curframe_time - pre) < 1.0f / 60.0f)
-			time_system::refresh();
+		while (((GLfloat)glfwGetTime() - pre) < 1.0f / 60.0f);
 	}
 
 	//tester1::release();

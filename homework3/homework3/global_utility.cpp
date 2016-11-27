@@ -10,6 +10,7 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	window = glfwCreateWindow(_width, _height, "Homework 3", nullptr, nullptr);
 
@@ -37,6 +38,7 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 		return -1;
 	}
 
+	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_DEPTH_TEST);
 
 	/*
@@ -46,6 +48,7 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	glfwSetKeyCallback(window, callback::key_callback);
 	glfwSetMouseButtonCallback(window, callback::mouse_button_callback);
 	glfwSetCursorPosCallback(window, callback::mouse_callback);
+	glfwSetScrollCallback(window, callback::scroll_callback);
 
 	/*
 		素材读入
