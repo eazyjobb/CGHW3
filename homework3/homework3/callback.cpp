@@ -74,7 +74,6 @@ namespace callback {
 			texture_tester::ratio = std::max(0.0f, texture_tester::ratio - 0.05f);
 		}
 
-
 		if (keys[GLFW_KEY_W])
 			coord::camera_front(time_system::delta_time() * coord::cameraSpeed);
 		if (keys[GLFW_KEY_S])

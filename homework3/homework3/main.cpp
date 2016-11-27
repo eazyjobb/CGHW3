@@ -16,9 +16,10 @@ int main()
 	//消息循环
 	while (!glfwWindowShouldClose(window))
 	{
-		glfwPollEvents();
-
 		time_system::refresh();
+		GLfloat pre = time_system::curframe_time;
+
+		glfwPollEvents();
 
 		callback::handle_events(window);
 
@@ -38,6 +39,9 @@ int main()
 
 		//交换缓冲区域
 		glfwSwapBuffers(window);
+
+		while ((time_system::curframe_time - pre) < 1.0f / 60.0f)
+			time_system::refresh();
 	}
 
 	//tester1::release();
