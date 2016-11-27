@@ -6,6 +6,7 @@
 #include "data_binding.h"
 #include "shader.h"
 #include "coord.h"
+#include "time_system.h"
 
 /*
 	void full_initial(GLFWwindow* &window, int _width, int _height)

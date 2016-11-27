@@ -43,11 +43,16 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	回调函数绑定
 	*/
 
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetKeyCallback(window, callback::key_callback);
+	glfwSetMouseButtonCallback(window, callback::mouse_button_callback);
+	glfwSetCursorPosCallback(window, callback::mouse_callback);
 
 	/*
 		素材读入
 	*/
+
+	if (callback::callback_init())
+		return -1;
 
 	if (shader::shader_init())
 		return -1;
@@ -57,6 +62,10 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 
 	if (coord::coord_init())
 		return -1;
+
+	if (time_system::time_system_init())
+		return -1;
+
 	//tester1::init();
 	//tester2::init();
 	//uni_tester::init();

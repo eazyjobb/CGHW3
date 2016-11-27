@@ -140,6 +140,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="std_header.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="time_system.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="callback.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="global_utility.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="time_system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="resources\shaders\coord_frag.txt">

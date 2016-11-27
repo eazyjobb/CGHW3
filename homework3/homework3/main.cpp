@@ -18,6 +18,10 @@ int main()
 	{
 		glfwPollEvents();
 
+		time_system::refresh();
+
+		callback::handle_events(window);
+
 		//清空画布
 		//GL_DEPTH_BUFFER_BIT GL_STENCIL_BUFFER_BIT
 

@@ -211,19 +211,26 @@ namespace coord_tester {
 				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture2"), 1);
 			}
 
-			glm::mat4 model;
-			model = glm::rotate(model, (GLfloat)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-
-			GLint modelLoc = glGetUniformLocation(ptr->second.program, "model");
 			GLint viewLoc = glGetUniformLocation(ptr->second.program, "view");
 			GLint projLoc = glGetUniformLocation(ptr->second.program, "projection");
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(coord::view));
 			glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(coord::projection));
 		}
 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
+		GLint modelLoc = glGetUniformLocation(ptr->second.program, "model");
+		for (GLuint i = 0; i < 10; i++)
+		{
+			glm::mat4 model;
+			model = glm::translate(model, cubePositions[i]);
+			GLfloat angle = glm::radians(20.0f) * (GLfloat)glfwGetTime() * i;
+			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
 		glBindVertexArray(0);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
