@@ -84,5 +84,9 @@ namespace callback {
 			coord::current_camera->second.camera_left(time_system::delta_time());
 		if (keys[GLFW_KEY_D])
 			coord::current_camera->second.camera_right(time_system::delta_time());
+		if (keys[GLFW_KEY_O])
+			coord::current_camera = coord::camera_list.find("oppsite");
+		if (keys[GLFW_KEY_N])
+			coord::current_camera = coord::camera_list.find("normal");
 	}
 }

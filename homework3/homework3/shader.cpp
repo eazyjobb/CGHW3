@@ -155,6 +155,11 @@ namespace shader {
 		glUseProgram(program);
 	}
 
+	const GLuint shader::getProgram() const
+	{
+		return program;
+	}
+
 	shader::shader(std::string vertex_index, std::string fragment_index) {
 		GLint success;
 		GLchar infoLog[512];

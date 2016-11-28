@@ -18,7 +18,7 @@ namespace texture {
 			}
 			texture2D_list.insert(std::make_pair(str, texture2D(resource_path + str)));
 			auto ptr = texture2D_list.find(str);
-			if (ptr == texture2D_list.end() || ptr->second.load_failed) {
+			if (ptr == texture2D_list.end() || ptr->second.load_fail()) {
 				std::cout << "ERROR::TEXTURE::TEXTURE2D::LOAD_FAILED " << str << std::endl;
 				return -1;
 			}
@@ -54,5 +54,21 @@ namespace texture {
 
 		SOIL_free_image_data(image);
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	const bool texture2D::load_fail() const
+	{
+		return load_failed;
+	}
+	const GLuint texture2D::getTexture() const
+	{
+		return texture;
+	}
+	const int texture2D::getWidth() const
+	{
+		return width;
+	}
+	const int texture2D::getHeight() const
+	{
+		return height;
 	}
 }

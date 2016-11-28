@@ -7,12 +7,15 @@ namespace coord {
 	int coord_init() {
 		camera_list.insert(std::make_pair("normal", camera()));
 		current_camera = camera_list.find("normal");
+		camera_list.insert(std::make_pair("oppsite", camera()));
+		camera_list["oppsite"].setYaw(90.0f);
+		camera_list["oppsite"].setCameraPos(glm::vec3(0.0f, 0.0f, -3.0f));
 		return 0;
 	}
 
 	camera::camera() {
 		fov = 20.0f; yaw = -90.0f; pitch = 0.0f;
-		cameraSpeed = 5.0f; cameraSensitivityX = 0.1f; cameraSensitivityY = 0.05f; cameraSensitivityFov = 1.0f;
+		cameraSpeedZ = 10.0f; cameraSpeedX = 5.0f; cameraSensitivityX = 0.1f; cameraSensitivityY = 0.05f; cameraSensitivityFov = 1.0f;
 		cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
 		refresh_camera();
@@ -38,22 +41,22 @@ namespace coord {
 	}
 
 	void camera::camera_front(GLfloat movement) {
-		cameraPos += cameraSpeed * movement * cameraFront;
+		cameraPos += cameraSpeedZ * movement * cameraFront;
 		refresh_view();
 	}
 
 	void camera::camera_back(GLfloat movement) {
-		cameraPos -= cameraSpeed * movement * cameraFront;
+		cameraPos -= cameraSpeedZ * movement * cameraFront;
 		refresh_view();
 	}
 
 	void camera::camera_left(GLfloat movement) {
-		cameraPos -= cameraSpeed * movement * cameraRight;
+		cameraPos -= cameraSpeedX * movement * cameraRight;
 		refresh_view();
 	}
 
 	void camera::camera_right(GLfloat movement) {
-		cameraPos += cameraSpeed * movement * cameraRight;
+		cameraPos += cameraSpeedX * movement * cameraRight;
 		refresh_view();
 	}
 

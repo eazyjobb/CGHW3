@@ -11,7 +11,7 @@ namespace coord {
 		void refresh_camera();
 		void refresh_view();
 	public:
-		GLfloat cameraSpeed, cameraSensitivityX, cameraSensitivityY, cameraSensitivityFov;
+		GLfloat cameraSpeedZ, cameraSpeedX, cameraSensitivityX, cameraSensitivityY, cameraSensitivityFov;
 
 		camera();
 

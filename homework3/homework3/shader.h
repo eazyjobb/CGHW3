@@ -4,17 +4,16 @@
 
 namespace shader
 {
-	extern std::string shader_path;
-
 	class shader
 	{
-	public:
+	private:
 		GLuint program;
+	public:
 		shader(std::string vertex_index, std::string fragment_index);
 		void use();
+		const GLuint getProgram() const;
 	};
 
-	extern std::unordered_map <std::string, GLuint> vertex_list, fragment_list;
 	extern std::unordered_map <std::string, shader> shader_list;
 
 	int shader_init();

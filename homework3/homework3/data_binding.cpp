@@ -94,7 +94,7 @@ namespace uni_tester {
 			ptr->second.use();
 			GLfloat timeValue = (GLfloat)glfwGetTime();
 			GLfloat greenValue = (sin(timeValue) / 2) + 0.5f;
-			GLint vertexColorLocation = glGetUniformLocation(ptr->second.program, "ourColor");
+			GLint vertexColorLocation = glGetUniformLocation(ptr->second.getProgram(), "ourColor");
 			glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 		}
 
@@ -140,24 +140,24 @@ namespace texture_tester {
 			glActiveTexture(GL_TEXTURE0);
 			auto texture_ptr = texture::texture2D_list.find("container.jpg");
 			if (texture_ptr != texture::texture2D_list.end()) {
-				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
-				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture1"), 0);
+				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.getTexture());
+				glUniform1i(glGetUniformLocation(ptr->second.getProgram(), "ourTexture1"), 0);
 			}
 
 			glActiveTexture(GL_TEXTURE1);
 			texture_ptr = texture::texture2D_list.find("awesomeface.png");
 			if (texture_ptr != texture::texture2D_list.end()) {
-				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
-				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture2"), 1);
+				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.getTexture());
+				glUniform1i(glGetUniformLocation(ptr->second.getProgram(), "ourTexture2"), 1);
 			}
 
-			glUniform1f(glGetUniformLocation(ptr->second.program,"ratio"), ratio);
+			glUniform1f(glGetUniformLocation(ptr->second.getProgram(),"ratio"), ratio);
 
 			glm::mat4 trans;
 			trans = glm::rotate(trans, (GLfloat)(glfwGetTime() * glm::radians(50.0)), glm::vec3(0.0f, 0.0f, 1.0f));
 			trans = glm::translate(trans, glm::vec3(cos((GLfloat)glfwGetTime())/3.0f, sin((GLfloat)glfwGetTime())/3.0f, 0.0f));
 
-			GLuint transformLoc = glGetUniformLocation(ptr->second.program, "trans");
+			GLuint transformLoc = glGetUniformLocation(ptr->second.getProgram(), "trans");
 			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 		}
 
@@ -200,19 +200,19 @@ namespace coord_tester {
 			glActiveTexture(GL_TEXTURE0);
 			auto texture_ptr = texture::texture2D_list.find("container.jpg");
 			if (texture_ptr != texture::texture2D_list.end()) {
-				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
-				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture1"), 0);
+				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.getTexture());
+				glUniform1i(glGetUniformLocation(ptr->second.getProgram(), "ourTexture1"), 0);
 			}
 
 			glActiveTexture(GL_TEXTURE1);
 			texture_ptr = texture::texture2D_list.find("awesomeface.png");
 			if (texture_ptr != texture::texture2D_list.end()) {
-				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.texture);
-				glUniform1i(glGetUniformLocation(ptr->second.program, "ourTexture2"), 1);
+				glBindTexture(GL_TEXTURE_2D, texture_ptr->second.getTexture());
+				glUniform1i(glGetUniformLocation(ptr->second.getProgram(), "ourTexture2"), 1);
 			}
 
-			GLint viewLoc = glGetUniformLocation(ptr->second.program, "view");
-			GLint projLoc = glGetUniformLocation(ptr->second.program, "projection");
+			GLint viewLoc = glGetUniformLocation(ptr->second.getProgram(), "view");
+			GLint projLoc = glGetUniformLocation(ptr->second.getProgram(), "projection");
 
 			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(coord::current_camera->second.getView()));
 			glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(coord::current_camera->second.getProjection()));
@@ -220,7 +220,7 @@ namespace coord_tester {
 
 		glBindVertexArray(VAO);
 		
-		GLint modelLoc = glGetUniformLocation(ptr->second.program, "model");
+		GLint modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
 		for (GLuint i = 0; i < 10; i++)
 		{
 			glm::mat4 model;

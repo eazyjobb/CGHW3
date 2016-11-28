@@ -17,7 +17,7 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		time_system::refresh();
-		GLfloat pre = time_system::curframe_time;
+		GLfloat pre = time_system::get_curframe_time();
 
 		glfwPollEvents();
 
