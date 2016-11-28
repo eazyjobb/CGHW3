@@ -31,10 +31,6 @@ int main()
 
 		//渲染
 
-		//tester1::refresh();
-		//tester2::refresh();
-		//uni_tester::refresh();
-		//texture_tester::refresh();
 		coord_tester::refresh();
 
 		//交换缓冲区域
@@ -43,10 +39,6 @@ int main()
 		while (((GLfloat)glfwGetTime() - pre) < 1.0f / 60.0f);
 	}
 
-	//tester1::release();
-	//tester2::release();
-	//uni_tester::release();
-	//texture_tester::release();
 	coord_tester::release();
 
 	//结束，释放内存
