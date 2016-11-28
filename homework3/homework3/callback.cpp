@@ -4,7 +4,7 @@ namespace callback {
 	bool keys[1024];
 	bool mouse_keys[8];
 	bool first_mouse;
-	GLfloat mouse_last_x, mouse_last_y;
+	GLfloat mouse_last_x, mouse_last_y, scroll_y, mouse_move_x, mouse_move_y;
 	
 	int callback_init() {
 		first_mouse = true;
@@ -13,6 +13,8 @@ namespace callback {
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 	{
+		if (key < 0)
+			return;
 		if (action == GLFW_PRESS)
 			keys[key] = true;
 		else if (action == GLFW_RELEASE)
@@ -27,7 +29,7 @@ namespace callback {
 
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		coord::current_camera->second.camera_fov((GLfloat)-yoffset);
+		scroll_y = (GLfloat)yoffset;
 	}
 
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -47,19 +49,19 @@ namespace callback {
 		if (false == mouse_keys[GLFW_MOUSE_BUTTON_RIGHT])
 			return;
 
-		coord::current_camera->second.camera_rotate(xoffset, yoffset);
+		mouse_move_x = xoffset;
+		mouse_move_y = yoffset;
 	}
 
 	void handle_events(GLFWwindow* window) {
-		if (mouse_keys[GLFW_MOUSE_BUTTON_RIGHT]) {
+		if (mouse_keys[GLFW_MOUSE_BUTTON_RIGHT])
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		}
-		else {
+		else
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
 
 		if (keys[GLFW_KEY_ESCAPE] || keys[GLFW_KEY_Q])
 			glfwSetWindowShouldClose(window, GL_TRUE);
+
 		if (keys[GLFW_KEY_L]) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			std::cout << "glPolygonMode :: Line" << std::endl;
@@ -69,24 +71,25 @@ namespace callback {
 			std::cout << "glPolygonMode :: Fill" << std::endl;
 		}
 
-		if (keys[GLFW_KEY_UP]) {
-			texture_tester::ratio = std::min(1.0f, texture_tester::ratio + 0.05f);
+		if (false == coord::get_swithing()) {
+			auto ptr = coord::get_current_camera();
+			if (keys[GLFW_KEY_W])
+				ptr->second.camera_front(time_system::delta_time());
+			if (keys[GLFW_KEY_S])
+				ptr->second.camera_back(time_system::delta_time());
+			if (keys[GLFW_KEY_A])
+				ptr->second.camera_left(time_system::delta_time());
+			if (keys[GLFW_KEY_D])
+				ptr->second.camera_right(time_system::delta_time());
+			if (scroll_y != 0.0f)
+				ptr->second.camera_fov((GLfloat)-scroll_y);
+			if (mouse_move_x != 0.0f || mouse_move_y != 0.0f)
+				ptr->second.camera_rotate(mouse_move_x, mouse_move_y);
+			if (keys[GLFW_KEY_O])
+				coord::set_current_camera("oppsite");
+			if (keys[GLFW_KEY_N])
+				coord::set_current_camera("normal");
 		}
-		if (keys[GLFW_KEY_DOWN]) {
-			texture_tester::ratio = std::max(0.0f, texture_tester::ratio - 0.05f);
-		}
-
-		if (keys[GLFW_KEY_W])
-			coord::current_camera->second.camera_front(time_system::delta_time());
-		if (keys[GLFW_KEY_S])
-			coord::current_camera->second.camera_back(time_system::delta_time());
-		if (keys[GLFW_KEY_A])
-			coord::current_camera->second.camera_left(time_system::delta_time());
-		if (keys[GLFW_KEY_D])
-			coord::current_camera->second.camera_right(time_system::delta_time());
-		if (keys[GLFW_KEY_O])
-			coord::current_camera = coord::camera_list.find("oppsite");
-		if (keys[GLFW_KEY_N])
-			coord::current_camera = coord::camera_list.find("normal");
+		mouse_move_x = mouse_move_y = scroll_y = 0.0f;
 	}
 }

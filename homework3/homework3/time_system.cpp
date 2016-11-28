@@ -12,12 +12,12 @@ namespace time_system {
 		return curframe_time - preframe_time;
 	}
 
-	const GLfloat get_preframe_time()
+	const GLfloat &get_preframe_time()
 	{
 		return preframe_time;
 	}
 
-	const GLfloat get_curframe_time()
+	const GLfloat &get_curframe_time()
 	{
 		return curframe_time;
 	}
@@ -25,5 +25,6 @@ namespace time_system {
 	void refresh() {
 		preframe_time = curframe_time;
 		curframe_time = (GLfloat)glfwGetTime();
+		std::cout << 1 / (curframe_time - preframe_time) << std::endl;
 	}
 }

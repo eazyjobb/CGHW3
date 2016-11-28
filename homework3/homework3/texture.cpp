@@ -4,6 +4,11 @@ namespace texture {
 	std::string resource_path = "resources/textures/";
 	std::unordered_map <std::string, texture2D> texture2D_list;
 
+	const std::unordered_map<std::string, texture2D>& get_texture2D_list()
+	{
+		return texture2D_list;
+	}
+
 	int texture_init() {
 		std::ifstream lin(resource_path + "texture2D_list.txt");
 
@@ -55,19 +60,19 @@ namespace texture {
 		SOIL_free_image_data(image);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	const bool texture2D::load_fail() const
+	const bool & texture2D::load_fail() const
 	{
 		return load_failed;
 	}
-	const GLuint texture2D::getTexture() const
+	const GLuint & texture2D::getTexture() const
 	{
 		return texture;
 	}
-	const int texture2D::getWidth() const
+	const int & texture2D::getWidth() const
 	{
 		return width;
 	}
-	const int texture2D::getHeight() const
+	const int & texture2D::getHeight() const
 	{
 		return height;
 	}

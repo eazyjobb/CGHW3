@@ -5,10 +5,6 @@
 #include "coord.h"
 
 namespace callback {
-	extern bool keys[1024];
-	extern bool first_mouse;
-	extern bool mouse_keys[8];
-	extern GLfloat mouse_last_x, mouse_last_y;
 	/*
 		键盘回调函数
 	*/

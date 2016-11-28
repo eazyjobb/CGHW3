@@ -3,8 +3,30 @@
 namespace coord {
 	std::unordered_map <std::string, camera> camera_list;
 	std::unordered_map <std::string, camera>::iterator current_camera;
+	bool swithing;
+
+	const std::unordered_map<std::string, camera>& get_camera_list()
+	{
+		return camera_list;
+	}
+
+	const std::unordered_map<std::string, camera>::iterator & get_current_camera()
+	{
+		return current_camera;
+	}
+
+	const bool & get_swithing()
+	{
+		return swithing;
+	}
+
+	void set_current_camera(const std::string & x) {
+		if (camera_list.count(x))
+		current_camera = camera_list.find(x);
+	}
 
 	int coord_init() {
+		swithing = false;
 		camera_list.insert(std::make_pair("normal", camera()));
 		current_camera = camera_list.find("normal");
 		camera_list.insert(std::make_pair("oppsite", camera()));
@@ -64,32 +86,32 @@ namespace coord {
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
 
-	const glm::vec3 camera::getCameraPos() const
+	const glm::vec3 &camera::getCameraPos() const
 	{
 		return cameraPos;
 	}
 
-	const glm::vec3 camera::getCameraFront() const
+	const glm::vec3 &camera::getCameraFront() const
 	{
 		return cameraFront;
 	}
 
-	const glm::vec3 camera::getCameraUp() const
+	const glm::vec3 &camera::getCameraUp() const
 	{
 		return cameraUp;
 	}
 
-	const glm::vec3 camera::getCameraRight() const
+	const glm::vec3 &camera::getCameraRight() const
 	{
 		return cameraRight;
 	}
 
-	const glm::mat4 camera::getView() const
+	const glm::mat4 &camera::getView() const
 	{
 		return view;
 	}
 
-	const glm::mat4 camera::getProjection() const
+	const glm::mat4 &camera::getProjection() const
 	{
 		return projection;
 	}

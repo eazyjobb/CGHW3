@@ -5,62 +5,9 @@ namespace shader {
 	std::unordered_map <std::string, GLuint> vertex_list, fragment_list;
 	std::unordered_map <std::string, shader> shader_list;
 
-	int shader_init() {
-		std::ifstream lin(shader_path + "shader_list.txt");
-		if (false == lin.is_open()) {
-			std::cout << "ERROR::SHADER::OPEN_LIST_FAILED" << std::endl;
-			return -1;
-		}
-
-		std::string str; size_t n;
-		lin >> str >> n; getline(lin, str);
-
-		if (vertex_list_init(lin, n)) {
-			std::cout << "ERROR::SHADER::VERTEX_INIT_FAILED" << std::endl;
-			return -1;
-		}
-
-		lin >> str >> n; getline(lin, str);
-
-		if (fragment_list_init(lin, n)) {
-			std::cout << "ERROR::SHADER::FRAGMENT_INIT_FAILED" << std::endl;
-			return -1;
-		}
-
-		lin >> str >> n; getline(lin, str);
-
-		for (size_t i = 0; i < n; ++i) {
-			getline(lin, str);
-			auto parts = split(str, '|');
-			if (parts.size() < 3 || parts[0] == "" ||
-				false == vertex_list.count(parts[1]) ||
-				false == fragment_list.count(parts[2])) {
-				std::cout << "ERROR::SHADER::PARA_ERROR" << std::endl;
-				return -1;
-			}
-			if (shader_list.count(parts[0]))
-			{
-				std::cout << "ERROR::SHADER::NAME_CONFLICT" << std::endl;
-				return -1;
-			}
-
-			shader_list.insert(std::make_pair(parts[0], shader(parts[1], parts[2])));
-			std::cout << shader_list.find(parts[0])->first << std::endl;
-		}
-
-		lin.close();
-
-		/*
-			释放内存
-		*/
-		for (auto & i : vertex_list)
-			glDeleteShader(i.second);
-		for (auto & i : fragment_list)
-			glDeleteShader(i.second);
-		vertex_list.clear();
-		fragment_list.clear();
-
-		return 0;
+	const std::unordered_map<std::string, shader> & get_shader_list()
+	{
+		return shader_list;
 	}
 
 	int vertex_list_init(std::ifstream & lin, size_t n) {
@@ -151,11 +98,69 @@ namespace shader {
 		return 0;
 	}
 
-	void shader::use() {
+	int shader_init() {
+		std::ifstream lin(shader_path + "shader_list.txt");
+		if (false == lin.is_open()) {
+			std::cout << "ERROR::SHADER::OPEN_LIST_FAILED" << std::endl;
+			return -1;
+		}
+
+		std::string str; size_t n;
+		lin >> str >> n; getline(lin, str);
+
+		if (vertex_list_init(lin, n)) {
+			std::cout << "ERROR::SHADER::VERTEX_INIT_FAILED" << std::endl;
+			return -1;
+		}
+
+		lin >> str >> n; getline(lin, str);
+
+		if (fragment_list_init(lin, n)) {
+			std::cout << "ERROR::SHADER::FRAGMENT_INIT_FAILED" << std::endl;
+			return -1;
+		}
+
+		lin >> str >> n; getline(lin, str);
+
+		for (size_t i = 0; i < n; ++i) {
+			getline(lin, str);
+			auto parts = split(str, '|');
+			if (parts.size() < 3 || parts[0] == "" ||
+				false == vertex_list.count(parts[1]) ||
+				false == fragment_list.count(parts[2])) {
+				std::cout << "ERROR::SHADER::PARA_ERROR" << std::endl;
+				return -1;
+			}
+			if (shader_list.count(parts[0]))
+			{
+				std::cout << "ERROR::SHADER::NAME_CONFLICT" << std::endl;
+				return -1;
+			}
+
+			shader_list.insert(std::make_pair(parts[0], shader(parts[1], parts[2])));
+			std::cout << shader_list.find(parts[0])->first << std::endl;
+		}
+
+		lin.close();
+
+		/*
+			释放内存
+		*/
+		for (auto & i : vertex_list)
+			glDeleteShader(i.second);
+		for (auto & i : fragment_list)
+			glDeleteShader(i.second);
+		vertex_list.clear();
+		fragment_list.clear();
+
+		return 0;
+	}
+
+	void shader::use() const {
 		glUseProgram(program);
 	}
 
-	const GLuint shader::getProgram() const
+	const GLuint & shader::getProgram() const
 	{
 		return program;
 	}

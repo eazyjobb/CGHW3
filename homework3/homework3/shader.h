@@ -10,13 +10,11 @@ namespace shader
 		GLuint program;
 	public:
 		shader(std::string vertex_index, std::string fragment_index);
-		void use();
-		const GLuint getProgram() const;
+		void use() const;
+		const GLuint & getProgram() const;
 	};
 
-	extern std::unordered_map <std::string, shader> shader_list;
+	const std::unordered_map <std::string, shader> & get_shader_list();
 
 	int shader_init();
-	int vertex_list_init(std::ifstream &, size_t);
-	int fragment_list_init(std::ifstream &, size_t);
 }
