@@ -213,8 +213,9 @@ namespace coord_tester {
 
 			GLint viewLoc = glGetUniformLocation(ptr->second.program, "view");
 			GLint projLoc = glGetUniformLocation(ptr->second.program, "projection");
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(coord::view));
-			glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(coord::projection));
+
+			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(coord::current_camera->second.getView()));
+			glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(coord::current_camera->second.getProjection()));
 		}
 
 		glBindVertexArray(VAO);

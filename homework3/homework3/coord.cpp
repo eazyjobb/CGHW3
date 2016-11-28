@@ -1,81 +1,133 @@
 #include "coord.h"
 
 namespace coord {
-	glm::mat4 view, projection;
-	glm::vec3 cameraPos, cameraFront, cameraUp, cameraRight;
-	GLfloat yaw, pitch, fov;
+	std::unordered_map <std::string, camera> camera_list;
+	std::unordered_map <std::string, camera>::iterator current_camera;
 
 	int coord_init() {
-		fov = 20.0f;
-		yaw = -90.0f;
-		pitch = 0.0f;
-
-		cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-
-		refresh_camera();
-
-		projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
-
+		camera_list.insert(std::make_pair("normal", camera()));
+		current_camera = camera_list.find("normal");
 		return 0;
 	}
 
-	void camera_rotate(GLfloat _yaw, GLfloat _pitch) {
-		yaw += _yaw;
-		pitch += _pitch;
+	camera::camera() {
+		fov = 20.0f; yaw = -90.0f; pitch = 0.0f;
+		cameraSpeed = 5.0f; cameraSensitivityX = 0.1f; cameraSensitivityY = 0.05f; cameraSensitivityFov = 1.0f;
+		cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
-		if (coord::pitch > 89.0f)
-			coord::pitch = 89.0f;
-		if (coord::pitch < -89.0f)
-			coord::pitch = -89.0f;
+		refresh_camera();
+		projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
+	}
+
+	void camera::camera_rotate(GLfloat _yaw, GLfloat _pitch) {
+		yaw += _yaw * cameraSensitivityX;
+		pitch += _pitch * cameraSensitivityY;
+
+		if (pitch > 89.0f)	pitch = 89.0f;
+		if (pitch < -89.0f)	pitch = -89.0f;
+
 		refresh_camera();
 	}
 
-	void camera_fov(GLfloat delta_fov)
+	void camera::camera_fov(GLfloat delta_fov)
 	{
-		fov += delta_fov;
-		if (fov <= 1.0f)
-			fov = 1.0f;
-		if (fov >= 45.0f)
-			fov = 45.0f;
-		coord::projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
+		fov += delta_fov * cameraSensitivityFov;
+		if (fov <= 1.0f) fov = 1.0f;
+		if (fov >= 45.0f) fov = 45.0f;
+		projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
 	}
 
-	void camera_front(GLfloat movement) {
-		coord::cameraPos += movement * coord::cameraFront;
+	void camera::camera_front(GLfloat movement) {
+		cameraPos += cameraSpeed * movement * cameraFront;
 		refresh_view();
 	}
 
-	void camera_back(GLfloat movement) {
-		coord::cameraPos -= movement * coord::cameraFront;
+	void camera::camera_back(GLfloat movement) {
+		cameraPos -= cameraSpeed * movement * cameraFront;
 		refresh_view();
 	}
 
-	void camera_left(GLfloat movement) {
-		coord::cameraPos -= movement * coord::cameraRight;
+	void camera::camera_left(GLfloat movement) {
+		cameraPos -= cameraSpeed * movement * cameraRight;
 		refresh_view();
 	}
 
-	void camera_right(GLfloat movement) {
-		coord::cameraPos += movement * coord::cameraRight;
+	void camera::camera_right(GLfloat movement) {
+		cameraPos += cameraSpeed * movement * cameraRight;
 		refresh_view();
 	}
 
-	void refresh_view() {
-		//std::cout << cameraFront.x << ' ' << cameraFront.y << ' ' << cameraFront.z << std::endl;
-		coord::view = glm::lookAt(coord::cameraPos, coord::cameraPos + coord::cameraFront, coord::cameraUp);
+	void camera::refresh_view() {
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
 
-	void refresh_camera() {
+	const glm::vec3 camera::getCameraPos() const
+	{
+		return cameraPos;
+	}
+
+	const glm::vec3 camera::getCameraFront() const
+	{
+		return cameraFront;
+	}
+
+	const glm::vec3 camera::getCameraUp() const
+	{
+		return cameraUp;
+	}
+
+	const glm::vec3 camera::getCameraRight() const
+	{
+		return cameraRight;
+	}
+
+	const glm::mat4 camera::getView() const
+	{
+		return view;
+	}
+
+	const glm::mat4 camera::getProjection() const
+	{
+		return projection;
+	}
+
+	void camera::setYaw(GLfloat x)
+	{
+		yaw = x;
+		refresh_camera();
+	}
+
+	void camera::setPitch(GLfloat x)
+	{
+		if (-89.0f <= x && x <= 89.0f)
+			pitch = x;
+		refresh_camera();
+	}
+
+	void camera::setFov(GLfloat x)
+	{
+		if (1.0f <= x && x <= 45.0f)
+			fov = x;
+		refresh_camera();
+	}
+
+	void camera::setCameraPos(glm::vec3 x) {
+		cameraPos = x;
+		refresh_view();
+	}
+
+	void camera::refresh_camera() {
 		glm::vec3 front;
-		front.x = cos(glm::radians(coord::yaw)) * cos(glm::radians(coord::pitch));
-		front.y = sin(glm::radians(coord::pitch));
-		front.z = sin(glm::radians(coord::yaw)) * cos(glm::radians(coord::pitch));
-		coord::cameraFront = glm::normalize(front);
-		front.x = cos(glm::radians(coord::yaw)) * cos(glm::radians(coord::pitch + 90.0f));
-		front.y = sin(glm::radians(coord::pitch + 90.0f));
-		front.z = sin(glm::radians(coord::yaw)) * cos(glm::radians(coord::pitch + 90.0f));
-		coord::cameraUp = glm::normalize(front);
-		coord::cameraRight = glm::normalize(glm::cross(coord::cameraFront, coord::cameraUp));
+		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+		front.y = sin(glm::radians(pitch));
+		front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+		cameraFront = glm::normalize(front);
+		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch + 90.0f));
+		front.y = sin(glm::radians(pitch + 90.0f));
+		front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch + 90.0f));
+		cameraUp = glm::normalize(front);
+		cameraRight = glm::normalize(glm::cross(cameraFront, cameraUp));
 		refresh_view();
 	}
+
 }

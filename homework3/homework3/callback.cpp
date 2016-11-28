@@ -27,7 +27,7 @@ namespace callback {
 
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
-		coord::camera_fov((GLfloat)-yoffset);
+		coord::current_camera->second.camera_fov((GLfloat)-yoffset);
 	}
 
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -46,11 +46,8 @@ namespace callback {
 
 		if (false == mouse_keys[GLFW_MOUSE_BUTTON_RIGHT])
 			return;
-		
-		xoffset *= coord::cameraSensitivityX;
-		yoffset *= coord::cameraSensitivityY;
 
-		coord::camera_rotate(xoffset, yoffset);
+		coord::current_camera->second.camera_rotate(xoffset, yoffset);
 	}
 
 	void handle_events(GLFWwindow* window) {
@@ -80,12 +77,12 @@ namespace callback {
 		}
 
 		if (keys[GLFW_KEY_W])
-			coord::camera_front(time_system::delta_time() * coord::cameraSpeed);
+			coord::current_camera->second.camera_front(time_system::delta_time());
 		if (keys[GLFW_KEY_S])
-			coord::camera_back(time_system::delta_time() * coord::cameraSpeed);
+			coord::current_camera->second.camera_back(time_system::delta_time());
 		if (keys[GLFW_KEY_A])
-			coord::camera_left(time_system::delta_time() * coord::cameraSpeed);
+			coord::current_camera->second.camera_left(time_system::delta_time());
 		if (keys[GLFW_KEY_D])
-			coord::camera_right(time_system::delta_time() * coord::cameraSpeed);
+			coord::current_camera->second.camera_right(time_system::delta_time());
 	}
 }
