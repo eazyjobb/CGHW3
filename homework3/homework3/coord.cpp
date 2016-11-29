@@ -1,4 +1,4 @@
-#include "coord.h"
+﻿#include "coord.h"
 
 namespace coord {
 	std::unordered_map <std::string, camera> camera_list;

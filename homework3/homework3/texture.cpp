@@ -1,4 +1,4 @@
-#include "texture.h"
+﻿#include "texture.h"
 
 namespace texture {
 	std::string resource_path = "resources/textures/";

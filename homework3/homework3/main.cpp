@@ -37,6 +37,7 @@ int main()
 		//交换缓冲区域
 		glfwSwapBuffers(window);
 
+		//锁帧60
 		while (((GLfloat)glfwGetTime() - pre) < 1.0f / 60.0f);
 	}
 

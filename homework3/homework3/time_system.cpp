@@ -1,6 +1,4 @@
-#include "time_system.h"
-
-#define fps_tester
+﻿#include "time_system.h"
 
 namespace time_system {
 	GLfloat preframe_time, curframe_time, max_time, min_time;
