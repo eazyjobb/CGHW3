@@ -1,17 +1,22 @@
-vertex 4
+vertex 5
 sample_vertex_shader
 vertex2
 texture_test_vertex
 coord_vertex
-fragment 5
+light_tester_vertex
+fragment 7
 sample_fragment_shader
 fragment2
 uni_fragment
 texture_test_fragment
 coord_frag
-program 5
+lamb
+light_tester_frag
+program 7
 sample_program|sample_vertex_shader|sample_fragment_shader
 tester2|vertex2|fragment2
 uni_test|sample_vertex_shader|uni_fragment
 texture_test|texture_test_vertex|texture_test_fragment
 coord_test|coord_vertex|coord_frag
+lamb|light_tester_vertex|lamb
+light_tester|light_tester_vertex|light_tester_frag

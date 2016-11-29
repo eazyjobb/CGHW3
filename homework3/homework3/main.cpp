@@ -31,7 +31,8 @@ int main()
 
 		//渲染
 
-		coord_tester::refresh();
+		//coord_tester::refresh();
+		light_tester::refresh();
 
 		//交换缓冲区域
 		glfwSwapBuffers(window);
@@ -39,7 +40,8 @@ int main()
 		while (((GLfloat)glfwGetTime() - pre) < 1.0f / 60.0f);
 	}
 
-	coord_tester::release();
+	//coord_tester::release();
+	light_tester::release();
 
 	//结束，释放内存
 	glfwTerminate();
