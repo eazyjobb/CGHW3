@@ -137,6 +137,7 @@
     <ClInclude Include="coord.h" />
     <ClInclude Include="data_binding.h" />
     <ClInclude Include="global_utility.h" />
+    <ClInclude Include="light.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="std_header.h" />
     <ClInclude Include="texture.h" />
@@ -146,6 +147,7 @@
     <ClCompile Include="callback.cpp" />
     <ClCompile Include="coord.cpp" />
     <ClCompile Include="data_binding.cpp" />
+    <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="global_utility.cpp" />
     <ClCompile Include="shader.cpp" />
