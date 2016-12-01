@@ -17,4 +17,4 @@
 #include <glm/gtc/type_ptr.hpp>
 
 //窗口大小
-const static int window_width = 1600, window_height = 900;
+const static int window_width = 1024, window_height = 768;
