@@ -53,12 +53,10 @@ namespace light {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuse);
 		glUniform1i(glGetUniformLocation(program, _diffuse), 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specular);
 		glUniform1i(glGetUniformLocation(program, _specular), 1);
-		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glUniform1f(glGetUniformLocation(program, _shininess), shininess);
 	}
