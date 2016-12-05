@@ -49,6 +49,8 @@ namespace coord {
 		void setPitch(GLfloat);
 		void setFov(GLfloat);
 		void setCameraPos(glm::vec3);
+
+		void Bind(GLuint, const char *, const char *, const char *) const;
 	};
 
 	//全局镜头列表

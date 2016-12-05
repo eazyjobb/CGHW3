@@ -62,13 +62,43 @@ namespace light {
 	}
 
 	vec3 sun_dir, sun_amb, sun_dif, sun_spc;
+	int point_light_num;
+	std::unordered_map <std::string, PointLight> point_list;
 
 	const DirLight & getSunLight() {
 		static DirLight sunLight(sun_dir, sun_amb, sun_dif, sun_spc);
 		return sunLight;
 	}
 
+	const int getPointLightNum() {
+		return point_light_num;
+	}
+
+	bool insertPointLight(const char * name, const vec3 & _position, const vec3 & _ambient, const vec3 & _diffuse, const vec3 & _specular, const float _constant, const float _linear, const float _quadratic)
+	{
+		if (point_light_num >=4 || point_list.count(name))
+			return false;
+		++ point_light_num;
+		point_list.insert(std::make_pair(name, PointLight(_position, _ambient, _diffuse, _specular, _constant, _linear, _quadratic)));
+		return true;
+	}
+
+	bool deletaPointLight(const char * name)
+	{
+		if (point_list.count(name) == false)
+			return false;
+		-- point_light_num;
+		point_list.erase(name);
+		return true;
+	}
+
+	const std::unordered_map<std::string, PointLight>& getPointList()
+	{
+		return point_list;
+	}
+
 	int init() {
+		point_light_num = 0;
 		sun_dir = vec3(0.0f, -1.0f, 0.0f);
 		sun_amb = vec3(0.2f, 0.2f, 0.2f);
 		sun_dif = vec3(0.5f, 0.5f, 0.5f);

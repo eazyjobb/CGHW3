@@ -141,6 +141,13 @@ namespace coord {
 		refresh_view();
 	}
 
+	void camera::Bind(GLuint program, const char * _view, const char * _proj, const char * _viewPos) const
+	{
+		glUniform3f(glGetUniformLocation(program, _viewPos), cameraPos.x, cameraPos.y, cameraPos.z);
+		glUniformMatrix4fv(glGetUniformLocation(program, _view), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(program, _proj), 1, GL_FALSE, glm::value_ptr(projection));
+	}
+
 	void camera::refresh_camera() {
 		glm::vec3 front;
 		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));

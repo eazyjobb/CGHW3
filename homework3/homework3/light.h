@@ -60,6 +60,11 @@ namespace light {
 	};
 	
 	const DirLight & getSunLight();
+	const int getPointLightNum();
+	bool insertPointLight(const char * name, const vec3 &_position, const vec3 &_ambient, const vec3 &_diffuse, const vec3 &_specular,
+		const float _constant, const float _linear, const float _quadratic);
+	bool deletaPointLight(const char * name);
+	const std::unordered_map <std::string, PointLight> & getPointList();
 
 	int init();
 }
