@@ -177,6 +177,13 @@ namespace light_tester {
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 	void init() {
+		glm::vec3 amb, dif, spc;
+		amb = glm::vec3(0.2f, 0.2f, 0.2f);
+		dif = glm::vec3(0.5f, 0.5f, 0.5f);
+		spc = glm::vec3(1.0f, 1.0f, 1.0f);
+
+		light::insertPointLight("pointLight",lightPos, amb, dif, spc, 1.0f, 0.14f, 0.07f);
+
 		glGenBuffers(1, &VBO);
 		glGenVertexArrays(1, &VAO);
 
@@ -202,13 +209,6 @@ namespace light_tester {
 
 		const light::DirLight & dirliggt = light::getSunLight();
 
-		glm::vec3 amb, dif, spc;
-		amb = glm::vec3(0.2f, 0.2f, 0.2f);
-		dif = glm::vec3(0.5f, 0.5f, 0.5f);
-		spc = glm::vec3(1.0f, 1.0f, 1.0f);
-
-		light::PointLight pointLight(lightPos, amb, dif, spc, 1.0f, 0.14f , 0.07f);
-
 		glBindVertexArray(VAO);
 
 			auto ptr = shader::get_shader_list().find("new_light");
@@ -219,19 +219,22 @@ namespace light_tester {
 				box.Bind(program, "material.diffuse", "material.specular", "material.shininess");
 				dirliggt.Bind(program, "dirLight.direction", "dirLight.ambient", "dirLight.diffuse", "dirLight.specular");
 
-				glUniform1i(glGetUniformLocation(program, "num_of_point_lights"), 1);
-				pointLight.Bind(program, "pointLights[0].position", "pointLights[0].ambient", "pointLights[0].diffuse",
-					"pointLights[0].specular", "pointLights[0].constant", "pointLights[0].linear", "pointLights[0].quadratic");
+				glUniform1i(glGetUniformLocation(program, "num_of_point_lights"), light::getPointLightNum());
 
-				GLint viewLoc = glGetUniformLocation(program, "view");
-				GLint projLoc = glGetUniformLocation(program, "projection");
-				GLint viewPosLoc = glGetUniformLocation(program, "viewPos");
+				char s[7][30] = {
+					"pointLights[0].position", "pointLights[0].ambient", "pointLights[0].diffuse",
+					"pointLights[0].specular", "pointLights[0].constant", "pointLights[0].linear",
+					"pointLights[0].quadratic"
+				};
 
-				auto cam = coord::get_current_camera()->second;
-				auto cam_pos = cam.getCameraPos();
-				glUniform3f(viewPosLoc, cam_pos.x, cam_pos.y, cam_pos.z);
-				glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(cam.getView()));
-				glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(cam.getProjection()));
+				const auto & pll = light::getPointList();
+				for (const auto & i : pll) {
+					i.second.Bind(program, s[0], s[1], s[2],s[3], s[4], s[5], s[6]);
+					for (int j = 0; j < 7; ++j)
+						++ s[j][12];
+				}
+
+				coord::get_current_camera()->second.Bind(program,"view","projection","viewPos");
 			}
 
 			GLint modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
@@ -243,12 +246,7 @@ namespace light_tester {
 				ptr->second.use();
 
 				auto program = ptr->second.getProgram();
-				GLint viewLoc = glGetUniformLocation(program, "view");
-				GLint projLoc = glGetUniformLocation(program, "projection");
-
-				auto cam = coord::get_current_camera()->second;
-				glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(cam.getView()));
-				glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(cam.getProjection()));
+				coord::get_current_camera()->second.Bind(program, "view", "projection", "viewPos");
 			}
 
 			modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
