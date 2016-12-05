@@ -4,6 +4,7 @@
 #include "shader.h"
 #include "texture.h"
 #include "coord.h"
+#include "light.h"
 
 namespace coord_tester {
 	void init();

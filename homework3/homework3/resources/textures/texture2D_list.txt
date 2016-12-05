@@ -1,4 +1,6 @@
-3
+5
 wall.jpg
 container.jpg
 awesomeface.png
+container2.png
+container2_specular.png
