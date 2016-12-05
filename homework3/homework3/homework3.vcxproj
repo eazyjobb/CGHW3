@@ -44,12 +44,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Ng_pc\Desktop\CGHW3\OpenGL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Ng_pc\Desktop\CGHW3\OpenGL\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\work\openGL\CGHW3\OpenGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\work\openGL\CGHW3\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Users\Ng_pc\Desktop\CGHW3\OpenGL\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Ng_pc\Desktop\CGHW3\OpenGL\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\work\openGL\CGHW3\OpenGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\work\openGL\CGHW3\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
