@@ -69,6 +69,9 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	if (time_system::time_system_init())
 		return -1;
 
+	if (light::init())
+		return -1;
+
 	//coord_tester::init();
 	light_tester::init();
 

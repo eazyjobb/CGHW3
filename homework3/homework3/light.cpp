@@ -60,4 +60,19 @@ namespace light {
 
 		glUniform1f(glGetUniformLocation(program, _shininess), shininess);
 	}
+
+	vec3 sun_dir, sun_amb, sun_dif, sun_spc;
+
+	const DirLight & getSunLight() {
+		static DirLight sunLight(sun_dir, sun_amb, sun_dif, sun_spc);
+		return sunLight;
+	}
+
+	int init() {
+		sun_dir = vec3(0.0f, -1.0f, 0.0f);
+		sun_amb = vec3(0.2f, 0.2f, 0.2f);
+		sun_dif = vec3(0.5f, 0.5f, 0.5f);
+		sun_spc = vec3(1.0f, 1.0f, 1.0f);
+		return 0;
+	}
 }

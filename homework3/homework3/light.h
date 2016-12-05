@@ -58,4 +58,8 @@ namespace light {
 		Material(const GLuint _diffuse, const GLuint _specular, const float _shininess);
 		void Bind(const GLuint program, const char* _diffuse, const char* _specular, const char* _shininess) const;
 	};
+	
+	const DirLight & getSunLight();
+
+	int init();
 }

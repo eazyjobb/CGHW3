@@ -200,12 +200,12 @@ namespace light_tester {
 			32.0f
 		);
 
-		glm::vec3 dir(0.0f, -1.0f, 0.0f),
-			amb(0.2f, 0.2f, 0.2f),
-			dif(0.5f, 0.5f, 0.5f),
-			spc(1.0f, 1.0f, 1.0f);
+		const light::DirLight & dirliggt = light::getSunLight();
 
-		light::DirLight dirliggt(dir, amb, dif, spc);
+		glm::vec3 amb, dif, spc;
+		amb = glm::vec3(0.2f, 0.2f, 0.2f);
+		dif = glm::vec3(0.5f, 0.5f, 0.5f);
+		spc = glm::vec3(1.0f, 1.0f, 1.0f);
 
 		light::PointLight pointLight(lightPos, amb, dif, spc, 1.0f, 0.14f , 0.07f);
 
