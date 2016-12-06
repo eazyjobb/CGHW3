@@ -13,4 +13,30 @@ namespace model {
 		Material(const GLuint _diffuse, const GLuint _specular, const float _shininess);
 		void Bind(const GLuint program, const char* _diffuse, const char* _specular, const char* _shininess) const;
 	};
+
+	struct Vertex
+	{
+		glm::vec3 Position;
+		glm::vec3 Normal;
+		glm::vec2 TexCoords;
+	};
+
+	class Mesh
+	{
+	public:
+		Mesh(const std::vector<Vertex> &_vertices, const std::vector<GLuint> &_indices, const std::vector<std::string> &_texture, float _shininess = 16.0f);
+		void Draw(GLuint program);
+		~Mesh();
+
+	private:
+		std::vector<Vertex> vertices;
+		std::vector<GLuint> indices;
+		std::vector<GLuint> textures_index;
+		std::vector<std::string> textures_name;
+		std::vector<std::string> textures_type;
+		float shininess;
+		GLuint VAO, VBO, EBO;
+		void setupMesh();
+	};
+
 }

@@ -6,6 +6,7 @@ namespace texture {
 	private:
 		int width, height;
 		GLuint texture;
+		std::string type;
 		bool load_failed;
 	public:
 		texture2D(std::string);
@@ -14,6 +15,8 @@ namespace texture {
 		const GLuint & getTexture() const;
 		const int & getWidth() const;
 		const int & getHeight() const;
+		const std::string & getType() const;
+		void setType(std::string);
 	};
 	
 	//全局纹理列表

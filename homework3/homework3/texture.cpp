@@ -76,4 +76,11 @@ namespace texture {
 	{
 		return height;
 	}
+	const std::string & texture2D::getType() const {
+		return type;
+	}
+	void texture2D::setType(std::string x)
+	{
+		type = x;
+	}
 }
