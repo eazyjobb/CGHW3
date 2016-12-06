@@ -6,12 +6,15 @@ namespace texture {
 	private:
 		int width, height;
 		GLuint texture;
+		std::string type;
 	public:
 		texture2D(GLuint texture_number, int width, int height);
 		//获取纹理绑定编号
 		const GLuint & getTexture() const;
 		const int & getWidth() const;
 		const int & getHeight() const;
+		const std::string & getType() const;
+		void setType(const char *str);
 	};
 	
 	//全局纹理列表
