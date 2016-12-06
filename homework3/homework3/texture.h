@@ -7,10 +7,6 @@ namespace texture {
 		int width, height;
 		GLuint texture;
 		std::string type;
-<<<<<<< HEAD
-		bool load_failed;
-=======
->>>>>>> origin/master
 	public:
 		texture2D(GLuint texture_number, int width, int height);
 		//获取纹理绑定编号
@@ -18,11 +14,7 @@ namespace texture {
 		const int & getWidth() const;
 		const int & getHeight() const;
 		const std::string & getType() const;
-<<<<<<< HEAD
-		void setType(std::string);
-=======
 		void setType(const char *str);
->>>>>>> origin/master
 	};
 	
 	//全局纹理列表

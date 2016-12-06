@@ -79,14 +79,6 @@ namespace texture {
 	{
 		return height;
 	}
-<<<<<<< HEAD
-	const std::string & texture2D::getType() const {
-		return type;
-	}
-	void texture2D::setType(std::string x)
-	{
-		type = x;
-=======
 	const std::string & texture2D::getType() const
 	{
 		return type;
@@ -94,6 +86,5 @@ namespace texture {
 	void texture2D::setType(const char * str) 
 	{
 		type = std::string(str);
->>>>>>> origin/master
 	}
 }
