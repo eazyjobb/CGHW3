@@ -4,10 +4,10 @@ namespace texture {
 	std::string resource_path = "resources/textures/";
 	std::unordered_map <std::string, texture2D> texture2D_list;
 
-	const std::unordered_map<std::string, texture2D>& get_texture2D_list()
-	{
+	const std::unordered_map<std::string, texture2D>& get_texture2D_list() {
 		return texture2D_list;
 	}
+
 	int texture_init() {
 		std::ifstream lin(resource_path + "texture2D_list.txt");
 
@@ -16,15 +16,15 @@ namespace texture {
 
 		for (size_t i = 0; i < n; ++i) {
 			lin >> str;
-			if (!read_insert(str.c_str())) {
-				std::cerr << "ERROR::TEXTURE::TEXTURE2D::NAME_CONFLICT " << str << std::endl; 
+			if (!read_insert(str.c_str()))
 				return -1;
-			}
 		}
+
 		lin.close();
 
 		return 0;
 	}
+
 	bool read_insert(const char * str) {
 		if (texture2D_list.count(std::string(str))) return true;
 
@@ -64,27 +64,27 @@ namespace texture {
 
 		return true;
 	}
-	texture2D::texture2D(GLuint text, int w, int h): texture(text), width(w), height(h)	{
-		
-	}
-	const GLuint & texture2D::getTexture() const
-	{
+
+	texture2D::texture2D(GLuint text, int w, int h)
+		:texture(text), width(w), height(h) {}
+
+	const GLuint & texture2D::getTexture() const {
 		return texture;
 	}
-	const int & texture2D::getWidth() const
-	{
+
+	const int & texture2D::getWidth() const {
 		return width;
 	}
-	const int & texture2D::getHeight() const
-	{
+
+	const int & texture2D::getHeight() const {
 		return height;
 	}
-	const std::string & texture2D::getType() const
-	{
+
+	const std::string & texture2D::getType() const {
 		return type;
 	}
-	void texture2D::setType(const char * str) 
-	{
+
+	void texture2D::setType(const char * str) {
 		type = std::string(str);
 	}
 }
