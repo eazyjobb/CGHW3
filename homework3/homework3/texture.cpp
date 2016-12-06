@@ -8,7 +8,6 @@ namespace texture {
 	{
 		return texture2D_list;
 	}
-
 	int texture_init() {
 		std::ifstream lin(resource_path + "texture2D_list.txt");
 
@@ -17,26 +16,36 @@ namespace texture {
 
 		for (size_t i = 0; i < n; ++i) {
 			lin >> str;
-			if (texture2D_list.count(str)) {
-				std::cout << "ERROR::TEXTURE::TEXTURE2D::NAME_CONFLICT " << str << std::endl;
-				return -1;
-			}
-			texture2D_list.insert(std::make_pair(str, texture2D(resource_path + str)));
-			auto ptr = texture2D_list.find(str);
-			if (ptr == texture2D_list.end() || ptr->second.load_fail()) {
-				std::cout << "ERROR::TEXTURE::TEXTURE2D::LOAD_FAILED " << str << std::endl;
+			if (!read_insert(str.c_str())) {
+				std::cerr << "ERROR::TEXTURE::TEXTURE2D::NAME_CONFLICT " << str << std::endl; 
 				return -1;
 			}
 		}
-
 		lin.close();
 
 		return 0;
 	}
+	bool read_insert(const char * str) {
+		if (texture2D_list.count(std::string(str))) return true;
 
-	texture2D::texture2D(std::string name) {
-		load_failed = false;
+		//img loading and check that whether the img exist
+		std::string imgf = resource_path + str;
+		std::ifstream is(imgf.c_str());
+		if (!is.is_open()) return false;
+
+		GLuint texture = 0; int width, height;
+
+		unsigned char* image = SOIL_load_image(imgf.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+		if (image == NULL) {
+			std::cerr << "ERROR::TEXTURE::TEXTURE2D::LOAD_FAILED " << imgf << std::endl;
+			SOIL_free_image_data(image);			
+			return false;
+		}
+
+		//binding and check whether the texture be gen
 		glGenTextures(1, &texture);
+		if (!texture) return false;
+
 		glBindTexture(GL_TEXTURE_2D, texture);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -45,24 +54,18 @@ namespace texture {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		unsigned char* image = SOIL_load_image(name.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
-		if (image == NULL) {
-			std::cout << "ERROR::TEXTURE::TEXTURE2D::LOAD_FAILED " << name << std::endl;
-			load_failed = true;
-			SOIL_free_image_data(image);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			return;
-		}
-
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		SOIL_free_image_data(image);
 		glBindTexture(GL_TEXTURE_2D, 0);
+
+		texture2D_list.insert(std::make_pair(std::string(str), texture2D(texture, width, height)));
+
+		return true;
 	}
-	const bool & texture2D::load_fail() const
-	{
-		return load_failed;
+	texture2D::texture2D(GLuint text, int w, int h): texture(text), width(w), height(h)	{
+		
 	}
 	const GLuint & texture2D::getTexture() const
 	{
