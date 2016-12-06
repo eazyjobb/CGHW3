@@ -201,7 +201,7 @@ namespace light_tester {
 
 	void refresh() {
 		glm::mat4 model;
-		light::Material box(
+		model::Material box(
 			texture::get_texture2D_list().find("container2.png")->second.getTexture(),
 			texture::get_texture2D_list().find("container2_specular.png")->second.getTexture(),
 			32.0f
@@ -229,7 +229,7 @@ namespace light_tester {
 
 				const auto & pll = light::getPointList();
 				for (const auto & i : pll) {
-					i.second.Bind(program, s[0], s[1], s[2],s[3], s[4], s[5], s[6]);
+					i.second.Bind(program, s[0], s[1], s[2], s[3], s[4], s[5], s[6]);
 					for (int j = 0; j < 7; ++j)
 						++ s[j][12];
 				}

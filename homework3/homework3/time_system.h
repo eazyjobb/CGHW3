@@ -2,7 +2,7 @@
 #include "std_header.h"
 
 //开启帧数检测
-#define fps_tester
+//#define fps_tester
 
 namespace time_system {
 	//全局初始化时间系统

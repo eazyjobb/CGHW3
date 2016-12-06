@@ -49,16 +49,7 @@ namespace light {
 		void Bind(const GLuint program, const char* _position, const char* _direction, const char* _ambient, const char* _diffuse, const char* _specular,
 			const char* _constant, const char* _linear, const char* _quadratic, const char* _cutOff, const char* _outerCutOff) const;
 	};
-	class Material {
-	private:
-		GLuint diffuse;		//漫反射编号
-		GLuint specular;	//光照贴图编号
-		float shininess;	//镜面反射参数：越大约光滑
-	public:
-		Material(const GLuint _diffuse, const GLuint _specular, const float _shininess);
-		void Bind(const GLuint program, const char* _diffuse, const char* _specular, const char* _shininess) const;
-	};
-	
+
 	const DirLight & getSunLight();
 	const int getPointLightNum();
 	bool insertPointLight(const char * name, const vec3 &_position, const vec3 &_ambient, const vec3 &_diffuse, const vec3 &_specular,

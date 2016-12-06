@@ -95,6 +95,7 @@
     <ClInclude Include="data_binding.h" />
     <ClInclude Include="global_utility.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="model.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="std_header.h" />
     <ClInclude Include="texture.h" />
@@ -107,6 +108,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="global_utility.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="time_system.cpp" />

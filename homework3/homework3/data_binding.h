@@ -5,6 +5,7 @@
 #include "texture.h"
 #include "coord.h"
 #include "light.h"
+#include "model.h"
 
 namespace coord_tester {
 	void init();
