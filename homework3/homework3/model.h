@@ -25,7 +25,7 @@ namespace model {
 	{
 	public:
 		Mesh(const std::vector<Vertex> &_vertices, const std::vector<GLuint> &_indices, const std::vector<std::string> &_texture, float _shininess = 16.0f);
-		void Draw(GLuint program);
+		void Draw(GLuint program) const;
 		~Mesh();
 
 	private:
@@ -39,4 +39,16 @@ namespace model {
 		void setupMesh();
 	};
 
+	class Model {
+	public:
+		Model(const aiScene* scene);
+		~Model();
+		void Draw(GLuint program) const;
+	private:
+		std::vector <Mesh> meshes;
+
+	};
+
+	bool read_model(const std::string &);
+	const std::unordered_map <std::string, Model> & getModelList();
 }

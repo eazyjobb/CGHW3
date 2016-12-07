@@ -7,6 +7,7 @@
 #include "shader.h"
 #include "coord.h"
 #include "time_system.h"
+#include "model.h"
 
 /*
 	void full_initial(GLFWwindow* &window, int _width, int _height)

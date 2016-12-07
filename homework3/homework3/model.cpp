@@ -1,6 +1,9 @@
 ﻿#include "model.h"
 
 namespace model {
+	const std::string model_path("resources/model/");
+	std::unordered_map<std::string, Model> model_list;
+
 	Material::Material(const GLuint _diffuse, const GLuint _specular, const float _shininess)
 		: diffuse(_diffuse), specular(_specular), shininess(_shininess) {}
 
@@ -33,7 +36,7 @@ namespace model {
 		setupMesh();
 	}
 
-	void Mesh::Draw(GLuint program) {
+	void Mesh::Draw(GLuint program) const {
 		GLuint diffuseNr = 1;
 		GLuint specularNr = 1;
 
@@ -58,8 +61,8 @@ namespace model {
 		glUniform1f(glGetUniformLocation(program, "shininess"), shininess);
 
 		// Draw mesh
-		glBindVertexArray(this->VAO);
-		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		// Always good practice to set everything back to defaults once configured.
@@ -99,6 +102,37 @@ namespace model {
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
+	}
+
+	bool read_model(const std::string & name) {
+		Assimp::Importer import;
+		const aiScene* scene = import.ReadFile(model_path + name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
+
+		if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+			return false;
+		}
+
+		model_list.insert(std::make_pair(name, Model(scene)));
+
+		return true;
+	}
+
+	const std::unordered_map<std::string, Model>& getModelList()
+	{
+		return model_list;
+	}
+
+	Model::Model(const aiScene * scene) {
+
+	}
+
+	Model::~Model() {}
+
+	void Model::Draw(GLuint program) const{
+		for (const auto & i : meshes)
+			i.Draw(program);
 	}
 
 }
