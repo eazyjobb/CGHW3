@@ -13,6 +13,8 @@ int main()
 		return -1;
 	}
 
+	model_tester::init(); // this part in full_initial in the wzm's way
+
 	//消息循环
 	while (!glfwWindowShouldClose(window))
 	{
@@ -32,7 +34,8 @@ int main()
 		//渲染
 
 		//coord_tester::refresh();
-		light_tester::refresh();
+		//light_tester::refresh();
+		model_tester::refresh();
 
 		//交换缓冲区域
 		glfwSwapBuffers(window);
@@ -42,7 +45,8 @@ int main()
 	}
 
 	//coord_tester::release();
-	light_tester::release();
+	//light_tester::release();
+	model_tester::release();
 
 	//结束，释放内存
 	glfwTerminate();

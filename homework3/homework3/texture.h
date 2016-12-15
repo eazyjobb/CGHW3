@@ -19,6 +19,7 @@ namespace texture {
 	
 	//全局纹理列表
 	const std::unordered_map <std::string, texture2D> & get_texture2D_list();
+	std::unordered_map <std::string, texture2D> & get_texture2D_list_fix();
 	//全局纹理初始化
 	int texture_init();
 	//尝试读取一个纹理并插入到全局纹理列表中，如果已存在则不做重复插入，如果文件不存在或者纹理分配失败返回false

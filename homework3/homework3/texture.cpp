@@ -8,6 +8,11 @@ namespace texture {
 		return texture2D_list;
 	}
 
+	std::unordered_map<std::string, texture2D>& get_texture2D_list_fix()
+	{
+		return texture2D_list;
+	}
+
 	int texture_init() {
 		std::ifstream lin(resource_path + "texture2D_list.txt");
 

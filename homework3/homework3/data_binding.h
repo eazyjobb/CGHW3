@@ -18,3 +18,10 @@ namespace light_tester {
 	void refresh();
 	void release();
 }
+
+namespace model_tester {
+	void init();
+	void refresh();
+	void release();
+}
+

@@ -27,7 +27,8 @@ namespace model {
 		Mesh(const std::vector<Vertex> &_vertices, const std::vector<GLuint> &_indices, const std::vector<std::string> &_texture, float _shininess = 16.0f);
 		void Draw(GLuint program) const;
 		~Mesh();
-
+		void release();
+								
 	private:
 		std::vector<Vertex> vertices;
 		std::vector<GLuint> indices;
@@ -44,11 +45,17 @@ namespace model {
 		Model(const aiScene* scene);
 		~Model();
 		void Draw(GLuint program) const;
+		void release();
+	private:
+		void processNode(aiNode *node, const aiScene *scene);
+		Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+		std::vector<std::string> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string &typeName);
 	private:
 		std::vector <Mesh> meshes;
 
 	};
 
 	bool read_model(const std::string &);
+	void release_all_model();
 	const std::unordered_map <std::string, Model> & getModelList();
 }
