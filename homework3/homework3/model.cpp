@@ -1,5 +1,7 @@
 ﻿#include "model.h"
 
+#define FOR_DEBUG
+
 namespace model {
 	const std::string model_path("resources/model/");
 	std::unordered_map<std::string, Model> model_list;
@@ -125,6 +127,9 @@ namespace model {
 			std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
 			return false;
 		}
+		#ifdef FOR_DEBUG
+				std::cout << "animation number: " << scene->mAnimations[0]->mName.C_Str() << std::endl;
+		#endif
 		//didn't check the model whether exist! need fix!
 		model_list.insert(std::make_pair(name, Model(scene)));
 
@@ -157,6 +162,7 @@ namespace model {
 	}
 
 	void Model::processNode(aiNode * node, const aiScene * scene) {
+		
 		for (GLuint i = 0; i < node->mNumMeshes; i++) {
 			// The node object only contains indices to index the actual objects in the scene. 
 			// The scene contains all the data, node is just to keep stuff organized (like relations between nodes).
@@ -170,6 +176,9 @@ namespace model {
 	}
 
 	Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene) {
+		std::cout << "bones number : " << mesh->mNumBones << std::endl;
+		
+
 		// Data to fill
 		std::vector<Vertex> vertices;
 		std::vector<GLuint> indices;
@@ -182,6 +191,10 @@ namespace model {
 			vector.x = mesh->mVertices[i].x;
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
+			#ifdef FOR_DEBUG
+				vector.x /= 30.0; vector.y /= 30.0; vector.z /= 30.0;
+			#endif
+
 			vertex.Position = vector;
 			// Normals
 			vector.x = mesh->mNormals[i].x;
@@ -238,16 +251,24 @@ namespace model {
 			mat->GetTexture(type, i, &str);
 			// Check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 
-			if (!texture::read_insert(str.C_Str())) {
-				std::cerr << "model::model::loadMasterialTexutres loading texture: (" <<  str.C_Str() << ")failed!" << std::endl;
+			std::string fixed(str.C_Str());
+
+			for (int i = fixed.size() - 1; i >= 0; --i) if (fixed[i] == '\\' || fixed[i] == '/') {
+				fixed.erase(0, i + 1);
+				break;
+			}
+
+			if (!texture::read_insert(fixed.c_str())) {
+				std::cerr << "model::model::loadMasterialTexutres loading texture: (" <<  fixed << ")failed!" << std::endl;
 			}
 			else {
-				std::cerr << "loading texture: " << str.C_Str() << std::endl;
-				texture::get_texture2D_list_fix().find(std::string(str.C_Str()))->second.setType(typeName.c_str());
-				textures.push_back(str.C_Str());
+				std::cerr << "loading texture: " << fixed << std::endl;
+				texture::get_texture2D_list_fix().find(std::string(fixed.c_str()))->second.setType(typeName.c_str());
+				textures.push_back(fixed.c_str());
 			}			
 		}
 		return textures;
 	}
 
 }
+

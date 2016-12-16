@@ -3,6 +3,8 @@
 #include "texture.h"
 #include "light.h"
 
+#define NUM_BONES_PER_VEREX 4
+
 namespace model {
 	class Material {
 	private:
@@ -19,6 +21,8 @@ namespace model {
 		glm::vec3 Position;
 		glm::vec3 Normal;
 		glm::vec2 TexCoords;
+		GLuint IDs[NUM_BONES_PER_VEREX];
+		GLfloat Weights[NUM_BONES_PER_VEREX];
 	};
 
 	class Mesh
