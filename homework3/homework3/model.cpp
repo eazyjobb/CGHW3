@@ -113,6 +113,13 @@ namespace model {
 			glEnableVertexAttribArray(2);
 			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
 
+			//fix in 2016 12 16  10:15 am
+			glEnableVertexAttribArray(3);
+			glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, IDs));
+
+			glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Weights));
+			
 		glBindVertexArray(0);
 	}
 
