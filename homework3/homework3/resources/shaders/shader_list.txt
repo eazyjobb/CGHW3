@@ -24,3 +24,4 @@ lamb|light_tester_vertex|lamb
 light_tester|light_tester_vertex|light_tester_frag
 new_light|light_tester_vertex|phong_frag
 mesh_phong|light_tester_vertex|new_phong_frag
+model|light_matrix_tester_vertex|new_phong_frag
