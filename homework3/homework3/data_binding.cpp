@@ -345,7 +345,7 @@ namespace model_tester {
 
 		
 		std::cerr << "Hello! Now in the model_tester!" << std::endl;
-		if (!model::read_model("Lilith.ms3d")) {
+		if (!model::read_model("gunbot-with-walk-animation.fbx")) {
 			std::cerr << "model_tester::init:: read_model failed" << std::endl;
 		}
 		else {
@@ -354,8 +354,34 @@ namespace model_tester {
 
 	}
 
-	void refresh() {
+	void fuck() {
+		glm::mat4 test(1.0f); aiMatrix4x4 fff;
+		test = glm::translate(test, glm::vec3(3, 4, 5));
+
+		assignment(fff, test);
 		
+
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) std::cout << test[i][j] << ' '; std::cout << std::endl;
+		}
+
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) std::cout << fff[i][j] << ' '; std::cout << std::endl;
+		}
+
+		assignment(test, fff);
+
+		glm::vec4 st(0, 0, 0, 1);
+		st = test * test * st;
+
+		for (int i = 0; i < 4; ++i) std::cout << st[i] << std::endl;
+
+		assert(0);
+	}
+
+	void refresh() {		
+		//fuck();
+
 		glm::mat4 model;
 		model::Material box(
 			texture::get_texture2D_list().find("container2.png")->second.getTexture(),
@@ -367,7 +393,7 @@ namespace model_tester {
 
 		glBindVertexArray(VAO);
 		
-			auto ptr = shader::get_shader_list().find("mesh_phong");	//箱子
+			auto ptr = shader::get_shader_list().find("model");	//箱子
 																	
 			if (ptr != shader::get_shader_list().end()) {
 				ptr->second.use();
@@ -404,6 +430,7 @@ namespace model_tester {
 				auto program = ptr->second.getProgram();
 				coord::get_current_camera()->second.Bind(program, "view", "projection", "viewPos");
 			}
+
 			GLuint			
 			modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
 
@@ -417,7 +444,8 @@ namespace model_tester {
 
 		glBindVertexArray(0);
 		
-		ptr = shader::get_shader_list().find("mesh_phong");
+		
+		ptr = shader::get_shader_list().find("model");    //没有贴图。。。mesh_phong
 
 		if (ptr != shader::get_shader_list().end()) {
 			ptr->second.use();
@@ -428,9 +456,9 @@ namespace model_tester {
 		modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
 		
 		int ang = 0;
-
-		const auto &mp = model::getModelList();
-		for (const auto &i : mp) {
+		
+		auto &mp = model::getModelList_notConst();
+		for (auto &i : mp) {
 
 			model = glm::mat4();
 			model = glm::translate(model, glm::vec3(ang, ang, ang));

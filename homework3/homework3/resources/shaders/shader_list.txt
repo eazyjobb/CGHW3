@@ -1,9 +1,10 @@
-vertex 5
+vertex 6
 sample_vertex_shader
 vertex2
 texture_test_vertex
 coord_vertex
 light_tester_vertex
+light_matrix_tester_vertex
 fragment 9
 sample_fragment_shader
 fragment2
@@ -14,7 +15,7 @@ lamb
 light_tester_frag
 phong_frag
 new_phong_frag
-program 9
+program 10
 sample_program|sample_vertex_shader|sample_fragment_shader
 tester2|vertex2|fragment2
 uni_test|sample_vertex_shader|uni_fragment
@@ -24,4 +25,4 @@ lamb|light_tester_vertex|lamb
 light_tester|light_tester_vertex|light_tester_frag
 new_light|light_tester_vertex|phong_frag
 mesh_phong|light_tester_vertex|new_phong_frag
-model|light_matrix_tester_vertex|new_phong_frag
+model|light_matrix_tester_vertex|lamb

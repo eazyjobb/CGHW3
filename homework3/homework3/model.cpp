@@ -1,4 +1,5 @@
 ﻿#include "model.h"
+#include "global_utility.h"
 
 #define FOR_DEBUG
 
@@ -26,6 +27,13 @@ namespace model {
 	Mesh::Mesh(const std::vector<Vertex>& _vertices, const std::vector<GLuint>& _indices, const std::vector<std::string>& _texture, float _shininess):
 		vertices(_vertices), indices(_indices), textures_name(_texture), shininess(_shininess)
 	{
+		for (auto &i : vertices) {
+			if (i.Weights[0] < 1e-6) {
+				i.Weights[0] = 1;
+				i.IDs[0] = 0;
+			}
+		}
+
 		auto texture_list = texture::get_texture2D_list();
 		for (const auto & i : textures_name) {
 			auto ptr = texture_list.find(i);
@@ -40,7 +48,7 @@ namespace model {
 		setupMesh();
 	}
 
-	void Mesh::Draw(GLuint program) const {
+	void Mesh::Draw(GLuint program) {
 		GLuint diffuseNr = 1;
 		GLuint specularNr = 1;
 
@@ -87,6 +95,7 @@ namespace model {
 		glDeleteBuffers(1, &EBO);
 	}
 
+
 	void Mesh::setupMesh() {		
 
 		glGenVertexArrays(1, &this->VAO);
@@ -124,9 +133,10 @@ namespace model {
 	}
 
 	/////////////////////////////////////////////////////////////////////
+	Assimp::Importer import;	//外移，用于测试
 
 	bool read_model(const std::string & name) {
-		Assimp::Importer import;
+		
 		const aiScene* scene = import.ReadFile(model_path + name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
 
 		if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -135,7 +145,7 @@ namespace model {
 			return false;
 		}
 		#ifdef FOR_DEBUG
-				std::cout << "animation number: " << scene->mAnimations[0]->mName.C_Str() << std::endl;
+				std::cout << "animation number: " << scene->mNumAnimations << std::endl;
 		#endif
 		//didn't check the model whether exist! need fix!
 		model_list.insert(std::make_pair(name, Model(scene)));
@@ -151,25 +161,291 @@ namespace model {
 		return model_list;
 	}
 
+	std::unordered_map<std::string, Model>& getModelList_notConst() {
+		return model_list;
+	}
+
 	///////////////////////////////////////////////////////////////////////
 
 	Model::Model(const aiScene * scene) {
-		this->processNode(scene->mRootNode, scene);
+		m_Scene = scene;
+
+		assignment(m_GlobalInverseTransform, m_Scene->mRootNode->mTransformation);
+		m_GlobalInverseTransform = glm::inverse(m_GlobalInverseTransform);
+
+		Transforms.push_back(glm::mat4(1.0f));
+		m_boneInfo.push_back(BoneInfo());
+		assignment(m_boneInfo[0].FinalTransformation, glm::mat4(1.0f));
+		assignment(m_boneInfo[0].BoneOffset, glm::mat4(1.0f));
+
+		
+
+		meshCnt = 0;
+		root = this->processNode(scene->mRootNode, scene);
 	}
 
 	Model::~Model() {}
 
-	void Model::Draw(GLuint program) const{
-		for (const auto & i : meshes)
+	void Model::Draw(GLuint program) {
+		BoneTransform(time_system::get_preframe_time() / 30.0);
+		for (auto & i : meshes) {
 			i.Draw(program);
+		}
+		//assert(false);
 	}
 
 	void Model::release() {
 		for (auto &i : meshes) i.release();
 	}
 
-	void Model::processNode(aiNode * node, const aiScene * scene) {
+	void fixedZero(glm::mat4 &u) {
+		return;
+		static const double eps = 1e-7;
+		for (int i = 0; i < 4; ++i) for (int j = 0; j < 4; ++j) if (-eps < u[i][j] && u[i][j] < eps) u[i][j] = 0;
+		return;
+		std::cout << std::endl;
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) std::cout << u[i][j] << ' '; std::cout << std::endl;
+		}			
+
+		return;
+	}
+
+	glm::mat4 Model::BoneTransform(GLfloat TimeInSeconds) {
 		
+		glm::mat4 identity(1.0f);
+
+		GLfloat TicksPerSecond = (m_Scene->mAnimations[0]->mTicksPerSecond != 0) ?
+			m_Scene->mAnimations[0]->mTicksPerSecond : 25.0f;
+
+		GLfloat TimeInTicks = TimeInSeconds * TicksPerSecond;
+		
+		GLfloat AnimationTime = fmod(TimeInTicks, std::max(0.0, m_Scene->mAnimations[0]->mDuration - 0.1));
+
+		ReadNodeHeirarchy(AnimationTime, m_Scene->mRootNode, identity);
+
+		if (Transforms.size() != m_boneInfo.size())
+			Transforms.resize(m_boneInfo.size());
+
+		//need fix
+		
+		auto ptr = shader::get_shader_list().find("model");
+
+		//std::cout << "====================================" << std::endl;
+
+		for (GLuint i = 0; i < m_boneInfo.size(); i++) {
+			assignment(Transforms[i], m_boneInfo[i].FinalTransformation);
+			fixedZero(Transforms[i]);
+
+		//	Transforms[i] = glm::mat4(1.0f);			
+			std::string name = "gBones[";
+			std::stringstream ss;
+			ss << i;
+			name = name + ss.str() + "]";
+			
+			glUniformMatrix4fv(glGetUniformLocation(ptr->second.getProgram(), name.c_str()), 1, GL_FALSE, glm::value_ptr(Transforms[i]));
+		}
+		
+		return glm::mat4();		
+	}
+
+	const aiNodeAnim * FindNodeAnim(const aiAnimation *pAnimation, std::string nodeName) {
+		for (GLuint i = 0; i < pAnimation->mNumChannels; ++i) {			
+			if (pAnimation->mChannels[i]->mNodeName.data == nodeName) return pAnimation->mChannels[i];
+		}
+		return nullptr;
+	}
+	
+	GLuint FindPosition(GLfloat AnimationTime, const aiNodeAnim* pNodeAnim)	{
+		
+		for (GLuint i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
+			if (AnimationTime < (GLfloat)pNodeAnim->mPositionKeys[i + 1].mTime) {
+				return i;
+			}
+		}
+		return 0;
+	}
+	
+	GLuint FindRotation(GLfloat AnimationTime, const aiNodeAnim* pNodeAnim)	{
+		
+		assert(pNodeAnim->mNumRotationKeys > 0);
+
+		for (GLuint i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
+			if (AnimationTime < (GLfloat)pNodeAnim->mRotationKeys[i + 1].mTime) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	GLuint FindScaling(GLfloat AnimationTime, const aiNodeAnim* pNodeAnim) {
+		
+		assert(pNodeAnim->mNumScalingKeys > 0);
+
+		for (GLuint i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
+			if (AnimationTime < (GLfloat)pNodeAnim->mScalingKeys[i + 1].mTime) {
+				return i;
+			}
+		}		
+		return 0;
+	}
+
+
+	void CalcInterpolatedScaling(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim)	{
+		if (pNodeAnim->mNumScalingKeys == 1) {
+			Out = pNodeAnim->mScalingKeys[0].mValue;
+			return;
+		}
+
+		GLuint ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
+		GLuint NextScalingIndex = (ScalingIndex + 1);
+		assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
+		GLfloat DeltaTime = (float)(pNodeAnim->mScalingKeys[NextScalingIndex].mTime - pNodeAnim->mScalingKeys[ScalingIndex].mTime);
+		GLfloat Factor = (AnimationTime - (float)pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
+		//assert(Factor >= 0.0f && Factor <= 1.0f);
+		if (!(Factor >= 0.0f && Factor <= 1.0f)) Factor = 0.5f;
+		const aiVector3D& Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
+		const aiVector3D& End = pNodeAnim->mScalingKeys[NextScalingIndex].mValue;
+		aiVector3D Delta = End - Start;
+		Out = Start + Factor * Delta;
+	}
+
+	void CalcInterpolatedRotation(aiQuaternion& Out, float AnimationTime, const aiNodeAnim* pNodeAnim) {
+		// we need at least two values to interpolate...
+
+		assert(pNodeAnim->mNumPositionKeys > 0);
+
+		if (pNodeAnim->mNumRotationKeys == 1) {
+			Out = pNodeAnim->mRotationKeys[0].mValue;
+			return;
+		}
+
+		GLuint RotationIndex = FindRotation(AnimationTime, pNodeAnim);
+		GLuint NextRotationIndex = (RotationIndex + 1);
+		assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
+		float DeltaTime = (float)(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
+		float Factor = (AnimationTime - (float)pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
+		//assert(Factor >= 0.0f && Factor <= 1.0f);
+		if (!(Factor >= 0.0f && Factor <= 1.0f)) Factor = 0.5f;
+		const aiQuaternion& StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
+		const aiQuaternion& EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
+		aiQuaternion::Interpolate(Out, StartRotationQ, EndRotationQ, Factor);
+		Out = Out.Normalize();
+	}
+
+	void CalcInterpolatedPosition(aiVector3D& Out, float AnimationTime, const aiNodeAnim* pNodeAnim) {
+		
+		if (pNodeAnim->mNumPositionKeys == 1) {
+			Out = pNodeAnim->mPositionKeys[0].mValue;
+			return;
+		}
+
+		GLuint PositionIndex = FindPosition(AnimationTime, pNodeAnim);
+		GLuint NextPositionIndex = (PositionIndex + 1);
+		assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
+		float DeltaTime = (float)(pNodeAnim->mPositionKeys[NextPositionIndex].mTime - pNodeAnim->mPositionKeys[PositionIndex].mTime);
+		float Factor = (AnimationTime - (float)pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
+		if (!(Factor >= 0.0f && Factor <= 1.0f)) Factor = 0.5f;
+		//assert(Factor >= 0.0f && Factor <= 1.0f);
+		const aiVector3D& Start = pNodeAnim->mPositionKeys[PositionIndex].mValue;
+		const aiVector3D& End = pNodeAnim->mPositionKeys[NextPositionIndex].mValue;
+		aiVector3D Delta = End - Start;
+		Out = Start + Factor * Delta;
+	}
+
+	int cnt = 0;
+	
+	void Model::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const glm::mat4 & ParentTransform, glm::vec4 tester) {
+		//if (cnt > 6) return;
+
+		++cnt;
+		
+
+		std::string NodeName(pNode->mName.data);
+
+
+		for (int i = 0; i < cnt; ++i) std::cout << " " ;
+		std::cout << "" << pNode->mName.data << ' ' << pNode->mNumMeshes << ' ' << (m_boneMap.find(NodeName) != m_boneMap.end()) << std::endl;
+		//	std::cout << "" << pNode->mNumMeshes << std::endl;
+
+		const aiAnimation* pAnimation = m_Scene->mAnimations[0];
+
+		glm::mat4 ThisTrans; assignment(ThisTrans, pNode->mTransformation);
+
+		glm::mat4 NodeTransformation(1.0f); assignment(NodeTransformation, pNode->mTransformation);
+		
+		//NodeTransformation = glm::transpose(NodeTransformation);
+
+		const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
+
+		if (pNodeAnim != nullptr) {
+			// Interpolate scaling and generate scaling transformation matrix
+			aiVector3D Scaling;
+			CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
+			glm::mat4 ScalingM(1.0f);
+			//ScalingM = glm::scale(ScalingM, glm::vec3(Scaling.x, Scaling.y, Scaling.z));
+			// Interpolate rotation and generate rotation transformation matrix
+			aiQuaternion RotationQ;
+			CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
+			glm::mat4 RotationM(1.0f);
+
+			aiMatrix3x3 s1 = RotationQ.GetMatrix();
+			aiMatrix4x4 s2(s1);
+
+			assignment(RotationM, s2);
+			// Interpolate translation and generate translation transformation matrix
+			aiVector3D Translation;
+			CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
+			glm::mat4 TranslationM(1.0f);
+			TranslationM = glm::translate(TranslationM, glm::vec3(Translation.x, Translation.y, Translation.z));
+			// Combine the above transformations
+
+			//glm::mat4(1.0f);//
+			//NodeTransformation = TranslationM * RotationM * ScalingM;
+			int a;
+			a = 1;
+		}
+		
+		glm::mat4 GlobalTransformation = ParentTransform * NodeTransformation;
+
+		if (m_boneMap.find(NodeName) != m_boneMap.end()) {
+			GLuint boneIndex = m_boneMap[NodeName];
+			glm::mat4 boneOffset(1.0f); assignment(boneOffset, m_boneInfo[boneIndex].BoneOffset);
+			//boneOffset = glm::transpose(boneOffset);
+			
+			assignment(m_boneInfo[boneIndex].FinalTransformation, m_GlobalInverseTransform * GlobalTransformation *
+				 boneOffset);
+			if (boneIndex == 1) {
+				/*
+				glm::mat4 ans = GlobalTransformation * boneOffset;
+
+				for (int i = 0; i < 4; ++i) {
+					for (int j = 0; j < 4; ++j) std::cout << GlobalTransformation[j][i] << ' '; std::cout << std::endl;
+				}
+				for (int i = 0; i < 4; ++i) {
+					for (int j = 0; j < 4; ++j) std::cout << boneOffset[j][i] << ' '; std::cout << std::endl;
+				}
+				*/
+				int a = 1;
+			}
+		}
+		
+		for (GLuint i = 0; i < pNode->mNumChildren; i++) {
+			ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], m_boneMap.find(NodeName) != m_boneMap.end() || 0 ? GlobalTransformation : glm::mat4(1.0f));
+		}
+		
+		--cnt;
+	}
+
+	std::ofstream os("log.txt"); 
+
+	GLuint Model::processNode(aiNode * node, const aiScene * scene) {
+
+		GLuint nt = meshNode.size();
+		meshNode.push_back(MeshEntry(nt));
+		meshNode[nt].MeshBase = meshes.size();
+		meshNode[nt].MeshSize = node->mNumMeshes;
+
 		for (GLuint i = 0; i < node->mNumMeshes; i++) {
 			// The node object only contains indices to index the actual objects in the scene. 
 			// The scene contains all the data, node is just to keep stuff organized (like relations between nodes).
@@ -180,12 +456,13 @@ namespace model {
 		for (GLuint i = 0; i < node->mNumChildren; i++)	{
 			this->processNode(node->mChildren[i], scene);
 		}
+
+		return nt;
 	}
 
 	Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene) {
 		std::cout << "bones number : " << mesh->mNumBones << std::endl;
 		
-
 		// Data to fill
 		std::vector<Vertex> vertices;
 		std::vector<GLuint> indices;
@@ -199,7 +476,7 @@ namespace model {
 			vector.y = mesh->mVertices[i].y;
 			vector.z = mesh->mVertices[i].z;
 			#ifdef FOR_DEBUG
-				vector.x /= 30.0; vector.y /= 30.0; vector.z /= 30.0;
+				//vector.x /= 30.0; vector.y /= 30.0; vector.z /= 30.0;
 			#endif
 
 			vertex.Position = vector;
@@ -247,6 +524,37 @@ namespace model {
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
 		
+		// loading bone
+		//mesh->mBones[0]->mOffsetMatrix 
+
+		for (GLuint i = 0; i < mesh->mNumBones; ++i) {
+			std::cerr << mesh->mBones[i]->mName.data << std::endl;
+
+			GLuint boneIndex = 0;
+			std::string boneName(mesh->mBones[i]->mName.data);
+			if (m_boneMap.count(boneName) == 0) {
+				m_boneMap[boneName] = boneIndex = m_boneInfo.size();
+
+				m_boneInfo.push_back(BoneInfo());
+
+				m_boneInfo[boneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
+				m_boneInfo[boneIndex].FinalTransformation = aiMatrix4x4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+			}
+			else {
+				boneIndex = m_boneMap[boneName];
+			}
+			
+			for (GLuint j = 0; j < mesh->mBones[i]->mNumWeights; ++j) {
+				GLuint vertexID = mesh->mBones[i]->mWeights[j].mVertexId;
+				GLfloat weight = mesh->mBones[i]->mWeights[j].mWeight;
+				vertices[vertexID].addBoneData(boneIndex, weight);
+			}
+		}
+
+		#ifdef FOR_DEBUG
+		//for debug!
+		#endif
+
 		return Mesh(vertices, indices, textures);
 	}
 
@@ -260,7 +568,7 @@ namespace model {
 
 			std::string fixed(str.C_Str());
 
-			for (int i = fixed.size() - 1; i >= 0; --i) if (fixed[i] == '\\' || fixed[i] == '/') {
+			for (int i = fixed.size() - 1; i >= 0; --i) if (fixed[i] == '\\' || fixed[i] == '/') {		//修改绝对路径为相对路径
 				fixed.erase(0, i + 1);
 				break;
 			}
@@ -278,4 +586,5 @@ namespace model {
 	}
 
 }
+
 
