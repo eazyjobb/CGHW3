@@ -6,6 +6,14 @@
 #define NUM_BONES_PER_VEREX 4
 
 namespace model {
+	//////////////////////debug
+	void debugAddLine(glm::vec3 a, glm::vec3 b, glm::vec3 rgb);
+	void debugDrawLine();
+	void debugRelease();
+
+	//////////////////////debug
+
+
 	class Material {
 	private:
 		GLuint diffuse;		//漫反射编号

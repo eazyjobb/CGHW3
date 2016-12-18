@@ -351,7 +351,7 @@ namespace model_tester {
 		else {
 			std::cerr << "loading obj successfully" << std::endl;
 		}
-
+		model::debugAddLine(glm::vec3(-5, -5, -5), glm::vec3(5, 5, 5), glm::vec3(1.0, 0, 0));
 	}
 
 	void fuck() {
@@ -381,6 +381,7 @@ namespace model_tester {
 
 	void refresh() {		
 		//fuck();
+		model::debugDrawLine();
 
 		glm::mat4 model;
 		model::Material box(
@@ -474,6 +475,8 @@ namespace model_tester {
 	}
 
 	void release() {
+		model::debugRelease();
+
 		model::release_all_model();
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);

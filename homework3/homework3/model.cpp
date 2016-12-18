@@ -4,6 +4,74 @@
 #define FOR_DEBUG
 
 namespace model {
+	///////////////////////////////////////
+	std::vector <GLuint > VAO, VBO;
+	std::vector <glm::vec3> linePositions;
+	
+	void debugAddLine(glm::vec3 a, glm::vec3 b, glm::vec3 rgb) {
+		static const double eps = 1e-2;
+		GLfloat data[] = {
+			0, 0, 0, rgb.x, rgb.y, rgb.z,
+			b.x - a.x, b.y - a.y, b.z - a.z, rgb.x, rgb.y, rgb.z,
+			eps, eps, eps, rgb.x, rgb.y, rgb.z,
+		};
+
+		GLuint vao, vbo;
+		glGenBuffers(1, &vbo);
+		glGenVertexArrays(1, &vao);
+
+		glBindVertexArray(vao);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (GLvoid*)0);
+
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, (GLvoid*)(3 * sizeof(GLfloat)));
+			
+		glBindVertexArray(0);
+
+		VAO.push_back(vao);
+		VBO.push_back(vbo);
+		linePositions.push_back(a);
+	}
+
+	void debugDrawLine() {
+		auto ptr = shader::get_shader_list().find("transAndColor");
+		ptr->second.use();
+
+		GLint viewLoc = glGetUniformLocation(ptr->second.getProgram(), "view");
+		GLint projLoc = glGetUniformLocation(ptr->second.getProgram(), "projection");
+
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(coord::get_current_camera()->second.getView()));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(coord::get_current_camera()->second.getProjection()));
+
+		GLint modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
+		
+
+		for (int i = 0; i < VAO.size(); ++i) {
+			glBindVertexArray(VAO[i]);
+
+			glm::mat4 model;
+			model = glm::translate(model, linePositions[i]);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+			
+			glBindVertexArray(0);
+		}
+	}
+
+	void debugRelease() {
+		for (int i = 0; i < VAO.size(); ++i) {
+			glDeleteVertexArrays(1, &VAO[i]);
+			glDeleteBuffers(1, &VBO[i]);
+		}
+	}
+	/////////////////////////////////////////
+
+
 	const std::string model_path("resources/model/");
 	std::unordered_map<std::string, Model> model_list;
 
@@ -374,8 +442,6 @@ namespace model {
 
 		glm::mat4 NodeTransformation(1.0f); assignment(NodeTransformation, pNode->mTransformation);
 		
-		//NodeTransformation = glm::transpose(NodeTransformation);
-
 		const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
 		if (pNodeAnim != nullptr) {
@@ -415,6 +481,8 @@ namespace model {
 			
 			assignment(m_boneInfo[boneIndex].FinalTransformation, m_GlobalInverseTransform * GlobalTransformation *
 				 boneOffset);
+
+
 			if (boneIndex == 1) {
 				/*
 				glm::mat4 ans = GlobalTransformation * boneOffset;
