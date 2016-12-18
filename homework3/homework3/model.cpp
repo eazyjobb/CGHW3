@@ -5,11 +5,16 @@
 
 namespace model {
 	///////////////////////////////////////
-	std::vector <GLuint > VAO, VBO;
-	std::vector <glm::vec3> linePositions;
+	std::unordered_map <std::string, GLuint > VAO, VBO;
+	std::unordered_map <std::string, glm::vec3> linePositions;
 	
-	void debugAddLine(glm::vec3 a, glm::vec3 b, glm::vec3 rgb) {
-		static const double eps = 1e-2;
+	void debugAddLine(glm::vec3 a, glm::vec3 b, glm::vec3 rgb, const std::string &name) {
+		if (VAO.count(name)) {
+			glDeleteVertexArrays(1, &VAO[name]);
+			glDeleteBuffers(1, &VBO[name]);
+		}
+
+		static const double eps = 1e-5;
 		GLfloat data[] = {
 			0, 0, 0, rgb.x, rgb.y, rgb.z,
 			b.x - a.x, b.y - a.y, b.z - a.z, rgb.x, rgb.y, rgb.z,
@@ -32,12 +37,13 @@ namespace model {
 			
 		glBindVertexArray(0);
 
-		VAO.push_back(vao);
-		VBO.push_back(vbo);
-		linePositions.push_back(a);
+		VAO[name] = (vao);
+		VBO[name] = (vbo);
+		linePositions[name] = (a);
 	}
 
 	void debugDrawLine() {
+		
 		auto ptr = shader::get_shader_list().find("transAndColor");
 		ptr->second.use();
 
@@ -50,24 +56,25 @@ namespace model {
 		GLint modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
 		
 
-		for (int i = 0; i < VAO.size(); ++i) {
-			glBindVertexArray(VAO[i]);
+		//for (int i = 0; i < VAO.size(); ++i) {
+		for (auto i : VAO) {
+			glBindVertexArray(i.second);
 
 			glm::mat4 model;
-			model = glm::translate(model, linePositions[i]);
+			model = glm::translate(model, linePositions[i.first]);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 			
 			glBindVertexArray(0);
 		}
+		
 	}
 
 	void debugRelease() {
-		for (int i = 0; i < VAO.size(); ++i) {
-			glDeleteVertexArrays(1, &VAO[i]);
-			glDeleteBuffers(1, &VBO[i]);
-		}
+		for (auto &i : VAO) glDeleteVertexArrays(1, &i.second);
+		for (auto &i : VBO) glDeleteBuffers(1, &i.second);
+
 	}
 	/////////////////////////////////////////
 
@@ -238,16 +245,14 @@ namespace model {
 	Model::Model(const aiScene * scene) {
 		m_Scene = scene;
 
-		assignment(m_GlobalInverseTransform, m_Scene->mRootNode->mTransformation);
+		assignment(m_GlobalInverseTransform, &(m_Scene->mRootNode->mTransformation));
 		m_GlobalInverseTransform = glm::inverse(m_GlobalInverseTransform);
 
 		Transforms.push_back(glm::mat4(1.0f));
 		m_boneInfo.push_back(BoneInfo());
-		assignment(m_boneInfo[0].FinalTransformation, glm::mat4(1.0f));
-		assignment(m_boneInfo[0].BoneOffset, glm::mat4(1.0f));
-
-		
-
+		m_boneInfo[0].FinalTransformation = glm::mat4(1.0f);
+		m_boneInfo[0].BoneOffset = aiMatrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+				
 		meshCnt = 0;
 		root = this->processNode(scene->mRootNode, scene);
 	}
@@ -302,7 +307,7 @@ namespace model {
 		//std::cout << "====================================" << std::endl;
 
 		for (GLuint i = 0; i < m_boneInfo.size(); i++) {
-			assignment(Transforms[i], m_boneInfo[i].FinalTransformation);
+			Transforms[i] = m_boneInfo[i].FinalTransformation;
 			fixedZero(Transforms[i]);
 
 		//	Transforms[i] = glm::mat4(1.0f);			
@@ -425,22 +430,19 @@ namespace model {
 	
 	void Model::ReadNodeHeirarchy(float AnimationTime, const aiNode * pNode, const glm::mat4 & ParentTransform, glm::vec4 tester) {
 		//if (cnt > 6) return;
-
 		++cnt;
 		
-
 		std::string NodeName(pNode->mName.data);
-
-
-		for (int i = 0; i < cnt; ++i) std::cout << " " ;
-		std::cout << "" << pNode->mName.data << ' ' << pNode->mNumMeshes << ' ' << (m_boneMap.find(NodeName) != m_boneMap.end()) << std::endl;
+		
+		//for (int i = 0; i < cnt; ++i) std::cout << " " ;
+		//std::cout << "" << pNode->mName.data << ' ' << pNode->mNumMeshes << ' ' << (m_boneMap.find(NodeName) != m_boneMap.end()) << std::endl;
 		//	std::cout << "" << pNode->mNumMeshes << std::endl;
 
 		const aiAnimation* pAnimation = m_Scene->mAnimations[0];
 
-		glm::mat4 ThisTrans; assignment(ThisTrans, pNode->mTransformation);
+		glm::mat4 ThisTrans; assignment(ThisTrans, &pNode->mTransformation);
 
-		glm::mat4 NodeTransformation(1.0f); assignment(NodeTransformation, pNode->mTransformation);
+		glm::mat4 NodeTransformation(1.0f); assignment(NodeTransformation, &pNode->mTransformation);
 		
 		const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
@@ -458,7 +460,7 @@ namespace model {
 			aiMatrix3x3 s1 = RotationQ.GetMatrix();
 			aiMatrix4x4 s2(s1);
 
-			assignment(RotationM, s2);
+			assignment(RotationM, &s2);
 			// Interpolate translation and generate translation transformation matrix
 			aiVector3D Translation;
 			CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
@@ -466,40 +468,35 @@ namespace model {
 			TranslationM = glm::translate(TranslationM, glm::vec3(Translation.x, Translation.y, Translation.z));
 			// Combine the above transformations
 
-			//glm::mat4(1.0f);//
-			//NodeTransformation = TranslationM * RotationM * ScalingM;
+			//NodeTransformation = glm::mat4(1.0f);
+			NodeTransformation = TranslationM * RotationM * ScalingM;
 			int a;
 			a = 1;
 		}
 		
 		glm::mat4 GlobalTransformation = ParentTransform * NodeTransformation;
+		glm::vec4 pos(0, 0, 0, 1);
 
 		if (m_boneMap.find(NodeName) != m_boneMap.end()) {
 			GLuint boneIndex = m_boneMap[NodeName];
-			glm::mat4 boneOffset(1.0f); assignment(boneOffset, m_boneInfo[boneIndex].BoneOffset);
+			glm::mat4 boneOffset(1.0f); assignment(boneOffset, &m_boneInfo[boneIndex].BoneOffset);
 			//boneOffset = glm::transpose(boneOffset);
 			
-			assignment(m_boneInfo[boneIndex].FinalTransformation, m_GlobalInverseTransform * GlobalTransformation *
-				 boneOffset);
+			m_boneInfo[boneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation *
+				 boneOffset;
+			
+			pos = m_GlobalInverseTransform * GlobalTransformation * pos;
 
+			debugAddLine(tester, pos, glm::vec3(cnt, cnt, 0), NodeName);
 
-			if (boneIndex == 1) {
-				/*
-				glm::mat4 ans = GlobalTransformation * boneOffset;
-
-				for (int i = 0; i < 4; ++i) {
-					for (int j = 0; j < 4; ++j) std::cout << GlobalTransformation[j][i] << ' '; std::cout << std::endl;
-				}
-				for (int i = 0; i < 4; ++i) {
-					for (int j = 0; j < 4; ++j) std::cout << boneOffset[j][i] << ' '; std::cout << std::endl;
-				}
-				*/
-				int a = 1;
-			}
 		}
+
+		
+		
+		
 		
 		for (GLuint i = 0; i < pNode->mNumChildren; i++) {
-			ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], m_boneMap.find(NodeName) != m_boneMap.end() || 0 ? GlobalTransformation : glm::mat4(1.0f));
+			ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], m_boneMap.find(NodeName) != m_boneMap.end() || 0 ? GlobalTransformation : glm::mat4(1.0f), pos);
 		}
 		
 		--cnt;
@@ -606,7 +603,7 @@ namespace model {
 				m_boneInfo.push_back(BoneInfo());
 
 				m_boneInfo[boneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
-				m_boneInfo[boneIndex].FinalTransformation = aiMatrix4x4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+				m_boneInfo[boneIndex].FinalTransformation = glm::mat4(0.0f);// (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			}
 			else {
 				boneIndex = m_boneMap[boneName];

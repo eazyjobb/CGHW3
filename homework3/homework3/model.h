@@ -7,7 +7,7 @@
 
 namespace model {
 	//////////////////////debug
-	void debugAddLine(glm::vec3 a, glm::vec3 b, glm::vec3 rgb);
+	void debugAddLine(glm::vec3 a, glm::vec3 b, glm::vec3 rgb, const std::string &name);
 	void debugDrawLine();
 	void debugRelease();
 
@@ -55,7 +55,8 @@ namespace model {
 	};
 
 	struct BoneInfo {
-		aiMatrix4x4 BoneOffset, FinalTransformation;
+		aiMatrix4x4 BoneOffset;
+		glm::mat4 FinalTransformation;
 	};
 
 	class Mesh

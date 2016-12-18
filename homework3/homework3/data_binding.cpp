@@ -351,14 +351,17 @@ namespace model_tester {
 		else {
 			std::cerr << "loading obj successfully" << std::endl;
 		}
-		model::debugAddLine(glm::vec3(-5, -5, -5), glm::vec3(5, 5, 5), glm::vec3(1.0, 0, 0));
+		//坐标系
+		model::debugAddLine(glm::vec3(0, 0, 0), glm::vec3(1, 0, 0), glm::vec3(1.0, 0, 0), "xox");
+		model::debugAddLine(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 1.0, 0), "yoy");
+		model::debugAddLine(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1.0), "zoz");
 	}
 
 	void fuck() {
 		glm::mat4 test(1.0f); aiMatrix4x4 fff;
 		test = glm::translate(test, glm::vec3(3, 4, 5));
 
-		assignment(fff, test);
+//		assignment(fff, test);
 		
 
 		for (int i = 0; i < 4; ++i) {
@@ -369,7 +372,7 @@ namespace model_tester {
 			for (int j = 0; j < 4; ++j) std::cout << fff[i][j] << ' '; std::cout << std::endl;
 		}
 
-		assignment(test, fff);
+//		assignment(test, fff);
 
 		glm::vec4 st(0, 0, 0, 1);
 		st = test * test * st;
