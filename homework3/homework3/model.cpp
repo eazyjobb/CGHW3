@@ -251,7 +251,7 @@ namespace model {
 		Transforms.push_back(glm::mat4(1.0f));
 		m_boneInfo.push_back(BoneInfo());
 		m_boneInfo[0].FinalTransformation = glm::mat4(1.0f);
-		m_boneInfo[0].BoneOffset = aiMatrix4x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+		m_boneInfo[0].BoneOffset = glm::mat4(1.0f);
 				
 		meshCnt = 0;
 		root = this->processNode(scene->mRootNode, scene);
@@ -442,7 +442,7 @@ namespace model {
 
 		glm::mat4 ThisTrans; assignment(ThisTrans, &pNode->mTransformation);
 
-		glm::mat4 NodeTransformation(1.0f); assignment(NodeTransformation, &pNode->mTransformation);
+		glm::mat4 NodeTransformation(1.0f); //assignment(NodeTransformation, &pNode->mTransformation);
 		
 		const aiNodeAnim* pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
@@ -470,8 +470,6 @@ namespace model {
 
 			//NodeTransformation = glm::mat4(1.0f);
 			NodeTransformation = TranslationM * RotationM * ScalingM;
-			int a;
-			a = 1;
 		}
 		
 		glm::mat4 GlobalTransformation = ParentTransform * NodeTransformation;
@@ -479,9 +477,8 @@ namespace model {
 
 		if (m_boneMap.find(NodeName) != m_boneMap.end()) {
 			GLuint boneIndex = m_boneMap[NodeName];
-			glm::mat4 boneOffset(1.0f); assignment(boneOffset, &m_boneInfo[boneIndex].BoneOffset);
-			//boneOffset = glm::transpose(boneOffset);
-			
+			glm::mat4 boneOffset(1.0f); boneOffset = m_boneInfo[boneIndex].BoneOffset;
+						
 			m_boneInfo[boneIndex].FinalTransformation = m_GlobalInverseTransform * GlobalTransformation *
 				 boneOffset;
 			
@@ -491,12 +488,8 @@ namespace model {
 
 		}
 
-		
-		
-		
-		
 		for (GLuint i = 0; i < pNode->mNumChildren; i++) {
-			ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], m_boneMap.find(NodeName) != m_boneMap.end() || 0 ? GlobalTransformation : glm::mat4(1.0f), pos);
+			ReadNodeHeirarchy(AnimationTime, pNode->mChildren[i], m_boneMap.find(NodeName) != m_boneMap.end() || 1 ? GlobalTransformation : glm::mat4(1.0f), pos);
 		}
 		
 		--cnt;
@@ -602,7 +595,7 @@ namespace model {
 
 				m_boneInfo.push_back(BoneInfo());
 
-				m_boneInfo[boneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
+				assignment(m_boneInfo[boneIndex].BoneOffset, &mesh->mBones[i]->mOffsetMatrix);
 				m_boneInfo[boneIndex].FinalTransformation = glm::mat4(0.0f);// (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			}
 			else {

@@ -55,8 +55,7 @@ namespace model {
 	};
 
 	struct BoneInfo {
-		aiMatrix4x4 BoneOffset;
-		glm::mat4 FinalTransformation;
+		glm::mat4 FinalTransformation, BoneOffset;
 	};
 
 	class Mesh

@@ -464,9 +464,9 @@ namespace model_tester {
 		auto &mp = model::getModelList_notConst();
 		for (auto &i : mp) {
 
-			model = glm::mat4();
-			model = glm::translate(model, glm::vec3(ang, ang, ang));
-			model = glm::scale(model, glm::vec3(0.2f));
+			model = glm::mat4(1.0f);
+			//model = glm::translate(model, glm::vec3(ang, ang, ang));
+			//model = glm::scale(model, glm::vec3(0.2f));
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
