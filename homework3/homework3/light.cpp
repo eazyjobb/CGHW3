@@ -87,6 +87,7 @@ namespace light {
 		sun_amb = vec3(0.2f, 0.2f, 0.2f);
 		sun_dif = vec3(0.5f, 0.5f, 0.5f);
 		sun_spc = vec3(1.0f, 1.0f, 1.0f);
+		//sun_dir = sun_amb = sun_spc = sun_dif = vec3(0.0f ,0.0f, 0.0f);
 		return 0;
 	}
 }

@@ -1,0 +1,40 @@
+#version 330 core
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
+layout (location = 2) in vec2 tec;
+//adding in 2016.12.16  19.48 pm
+//for bone binding
+layout (location = 3) in ivec4 BoneIDs;
+layout (location = 4) in vec4 Weights;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+out vec3 Normal;
+out vec3 FragPos;
+out vec2 TexCoords;
+
+//for bone binding
+const int MAX_BONES = 1000;
+uniform mat4 gBones[MAX_BONES];	
+
+void main()
+{
+	//for bone binding
+	mat4 BoneTransform = gBones[BoneIDs[0]] * Weights[0];
+    BoneTransform += gBones[BoneIDs[1]] * Weights[1];
+    BoneTransform += gBones[BoneIDs[2]] * Weights[2];
+    BoneTransform += gBones[BoneIDs[3]] * Weights[3];
+	
+    //gl_Position = projection * view * model * vec4(position, 1.0f);
+	gl_Position = projection * view * model * BoneTransform * vec4(position, 1.0f);
+	
+	//FragPos = vec3(model * vec4(position, 1.0f));
+	FragPos = vec3(model * BoneTransform * vec4(position, 1.0f));
+	
+    //Normal = normal;
+	Normal = vec3(BoneTransform * vec4(normal, 0.0f));
+	
+	TexCoords = tec;
+}

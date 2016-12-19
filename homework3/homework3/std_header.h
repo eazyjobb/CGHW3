@@ -19,5 +19,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <cmath>
+
 //窗口大小
 const static int window_width = 1024, window_height = 768;

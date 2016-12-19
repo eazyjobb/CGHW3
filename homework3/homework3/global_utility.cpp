@@ -93,3 +93,37 @@ std::vector<std::string> split(const std::string &str, const char &ch) {
 	ans.push_back(now);
 	return ans;
 }
+
+void assignment(glm::mat4 & a, const aiMatrix4x4 *b) {
+
+	a[0][0] = (GLfloat)b->a1; a[1][0] = (GLfloat)b->a2;
+	a[2][0] = (GLfloat)b->a3; a[3][0] = (GLfloat)b->a4;
+	a[0][1] = (GLfloat)b->b1; a[1][1] = (GLfloat)b->b2;
+	a[2][1] = (GLfloat)b->b3; a[3][1] = (GLfloat)b->b4;
+	a[0][2] = (GLfloat)b->c1; a[1][2] = (GLfloat)b->c2;
+	a[2][2] = (GLfloat)b->c3; a[3][2] = (GLfloat)b->c4;
+	a[0][3] = (GLfloat)b->d1; a[1][3] = (GLfloat)b->d2;
+	a[2][3] = (GLfloat)b->d3; a[3][3] = (GLfloat)b->d4;
+
+	//memcpy(&a, &b, sizeof(glm::mat4));
+	//for (int i = 0; i < 4; ++i) for (int j = 0; j < 4; ++j) a[j][i] = b[i][j];
+	
+	//for debug
+	//for (int i = 0; i < 4; ++i) for (int j = 0; j < 4; ++j) if (a[i][j] != b[i][j]) assert(0);
+}
+
+void assignment(aiMatrix4x4 & a, const glm::mat4 & b) {
+	//memcpy(&a, &b, sizeof(glm::mat4));
+	for (int i = 0; i < 4; ++i) for (int j = 0; j < 4; ++j) a[j][i] = b[i][j];
+	//for debug
+	//for (int i = 0; i < 4; ++i) for (int j = 0; j < 4; ++j) if (a[i][j] != b[i][j]) assert(0);
+}
+
+/*
+void assignment(glm::mat4 & a, const aiMatrix3x3 & b) {
+	memset(&a, 0, sizeof(a));
+	for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) a[j][i] = b[i][j];
+	//for debug 
+	for (int i = 0; i < 3; ++i) for (int j = 0; j <3 ; ++j) if (a[i][j] != b[i][j]) assert(0);
+}
+*/
