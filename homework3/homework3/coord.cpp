@@ -40,8 +40,8 @@ namespace coord {
 		cameraSpeedZ = 10.0f; cameraSpeedX = 5.0f; cameraSensitivityX = 0.1f; cameraSensitivityY = 0.05f; cameraSensitivityFov = 1.0f;
 		cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
-		refresh_camera();																								//fixed in 2016.12.18 14:12 pm
-		projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 1000.0f);
+		refresh_camera();
+		projection = glm::perspective((GLfloat)glm::radians(fov), (GLfloat)window_width / (GLfloat)window_height, 0.1f, 100.0f);
 	}
 
 	void camera::camera_rotate(GLfloat _yaw, GLfloat _pitch) {

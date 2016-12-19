@@ -345,47 +345,23 @@ namespace model_tester {
 
 		
 		std::cerr << "Hello! Now in the model_tester!" << std::endl;
-		if (!model::read_model("humanoid1.fbx")) {//gunbot-with-walk-animation  humanoid1
+		if (!model::read_model("nanosuit.obj")) {
 			std::cerr << "model_tester::init:: read_model failed" << std::endl;
 		}
 		else {
 			std::cerr << "loading obj successfully" << std::endl;
 		}
-		//坐标系
-		model::debugAddLine(glm::vec3(0, 0, 0), glm::vec3(1, 0, 0), glm::vec3(1.0, 0, 0), "xox");
-		model::debugAddLine(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec3(0, 1.0, 0), "yoy");
-		model::debugAddLine(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1.0), "zoz");
+
+		if (!model::read_model("miku.pmd")) {
+			std::cerr << "model_tester::init:: read_model failed" << std::endl;
+		}
+		else {
+			std::cerr << "loading obj successfully" << std::endl;
+		}
 	}
 
-	void fuck() {
-		glm::mat4 test(1.0f); aiMatrix4x4 fff;
-		test = glm::translate(test, glm::vec3(3, 4, 5));
-
-//		assignment(fff, test);
+	void refresh() {
 		
-
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 4; ++j) std::cout << test[i][j] << ' '; std::cout << std::endl;
-		}
-
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 4; ++j) std::cout << fff[i][j] << ' '; std::cout << std::endl;
-		}
-
-//		assignment(test, fff);
-
-		glm::vec4 st(0, 0, 0, 1);
-		st = test * test * st;
-
-		for (int i = 0; i < 4; ++i) std::cout << st[i] << std::endl;
-
-		assert(0);
-	}
-
-	void refresh() {		
-		//fuck();
-		model::debugDrawLine();
-
 		glm::mat4 model;
 		model::Material box(
 			texture::get_texture2D_list().find("container2.png")->second.getTexture(),
@@ -397,13 +373,13 @@ namespace model_tester {
 
 		glBindVertexArray(VAO);
 		
-			auto ptr = shader::get_shader_list().find("model");	//箱子
+			auto ptr = shader::get_shader_list().find("new_light");	//箱子
 																	
 			if (ptr != shader::get_shader_list().end()) {
 				ptr->second.use();
 				auto program = ptr->second.getProgram();
 
-				//box.Bind(program, "material.diffuse", "material.specular", "material.shininess");	//不能去掉，绑定了漫反射系数
+				box.Bind(program, "material.diffuse", "material.specular", "material.shininess");	//不能去掉，绑定了漫反射系数
 				dirliggt.Bind(program, "dirLight.direction", "dirLight.ambient", "dirLight.diffuse", "dirLight.specular");
 
 				glUniform1i(glGetUniformLocation(program, "num_of_point_lights"), light::getPointLightNum());
@@ -434,7 +410,6 @@ namespace model_tester {
 				auto program = ptr->second.getProgram();
 				coord::get_current_camera()->second.Bind(program, "view", "projection", "viewPos");
 			}
-
 			GLuint			
 			modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
 
@@ -448,8 +423,7 @@ namespace model_tester {
 
 		glBindVertexArray(0);
 		
-		
-		ptr = shader::get_shader_list().find("model");    //没有贴图。。。mesh_phong
+		ptr = shader::get_shader_list().find("new_light");
 
 		if (ptr != shader::get_shader_list().end()) {
 			ptr->second.use();
@@ -458,22 +432,26 @@ namespace model_tester {
 		}
 
 		modelLoc = glGetUniformLocation(ptr->second.getProgram(), "model");
-				
-		auto &mp = model::getModelList_notConst();
+		
+		int ang = 0;
 
-		for (auto &i : mp) {
-			model = glm::mat4(1.0f);
+		const auto &mp = model::getModelList();
+		for (const auto &i : mp) {
+
+			model = glm::mat4();
+			model = glm::translate(model, glm::vec3(ang, ang, ang));
+			model = glm::scale(model, glm::vec3(0.2f));
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 			i.second.Draw(ptr->second.getProgram());
+
+			ang += 2;
 		}
 		
 	}
 
 	void release() {
-		model::debugRelease();
-
 		model::release_all_model();
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
