@@ -13,11 +13,12 @@ int main()
 		return -1;
 	}
 
+	coord_tester::init();
+	light_tester::init();
 	model_tester::init(); // this part in full_initial in the wzm's way
 
 	//消息循环
-	while (!glfwWindowShouldClose(window))
-	{
+	while (!glfwWindowShouldClose(window)) {
 		time_system::refresh();
 		GLfloat pre = time_system::get_curframe_time();
 
@@ -35,7 +36,15 @@ int main()
 
 		//coord_tester::refresh();
 		//light_tester::refresh();
-		model_tester::refresh();
+		//model_tester::refresh();
+		switch (callback::get_showStaus()) {
+			
+		case 1: coord_tester::refresh(); break;
+		case 2: light_tester::refresh(); break;
+		case 3: model_tester::refresh(); break;
+			default:
+				break;
+		}
 
 		//交换缓冲区域
 		glfwSwapBuffers(window);
@@ -44,8 +53,8 @@ int main()
 		while (((GLfloat)glfwGetTime() - pre) < 1.0f / 60.0f);
 	}
 
-	//coord_tester::release();
-	//light_tester::release();
+	coord_tester::release();
+	light_tester::release();
 	model_tester::release();
 
 	//结束，释放内存

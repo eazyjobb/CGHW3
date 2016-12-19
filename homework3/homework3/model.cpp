@@ -42,8 +42,7 @@ namespace model {
 		GLuint diffuseNr = 1;
 		GLuint specularNr = 1;
 
-		for (size_t i = 0; i < textures_index.size(); ++ i)
-		{
+		for (size_t i = 0; i < textures_index.size(); ++ i)	{
 			glActiveTexture(GL_TEXTURE0 + i); // Active proper texture unit before binding
 											  // Retrieve texture number (the N in diffuse_textureN)
 			char number;
@@ -68,8 +67,7 @@ namespace model {
 		glBindVertexArray(0);
 
 		// Always good practice to set everything back to defaults once configured.
-		for (size_t i = 0; i < textures_index.size(); i++)
-		{
+		for (size_t i = 0; i < textures_index.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
@@ -88,8 +86,6 @@ namespace model {
 	void Mesh::setupMesh() {		
 
 		glGenVertexArrays(1, &this->VAO);
-
-		std::cerr << "this Mesh's VAO is : " << this->VAO << std::endl;
 
 		glGenBuffers(1, &this->VBO);
 		glGenBuffers(1, &this->EBO);

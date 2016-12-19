@@ -17,4 +17,6 @@ namespace callback {
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	//鼠标滚轮回调
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+	//切换tester
+	int get_showStaus();
 }

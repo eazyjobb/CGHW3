@@ -72,8 +72,6 @@ int full_initial(GLFWwindow* &window, int _width, int _height) {
 	if (light::init())
 		return -1;
 
-	//coord_tester::init();
-	//light_tester::init();
 
 	return 0;
 }

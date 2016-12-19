@@ -4,6 +4,9 @@ namespace callback {
 	bool keys[1024];
 	bool mouse_keys[8];
 	bool first_mouse;
+
+	int show_staus = 1;
+
 	GLfloat mouse_last_x, mouse_last_y, scroll_y, mouse_move_x, mouse_move_y;
 	
 	int callback_init() {
@@ -30,6 +33,10 @@ namespace callback {
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		scroll_y = (GLfloat)yoffset;
+	}
+
+	int get_showStaus()	{
+		return show_staus;
 	}
 
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -70,6 +77,16 @@ namespace callback {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			std::cout << "glPolygonMode :: Fill" << std::endl;
 		}
+		if (keys[GLFW_KEY_1]) {
+			show_staus = 1;
+		}
+		if (keys[GLFW_KEY_2]) {
+			show_staus = 2;
+		}
+		if (keys[GLFW_KEY_3]) {
+			show_staus = 3;
+		}
+
 
 		if (false == coord::get_swithing()) {
 			auto ptr = coord::get_current_camera();
@@ -92,4 +109,6 @@ namespace callback {
 		}
 		mouse_move_x = mouse_move_y = scroll_y = 0.0f;
 	}
+
+
 }

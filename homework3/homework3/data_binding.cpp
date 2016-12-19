@@ -351,13 +351,6 @@ namespace model_tester {
 		else {
 			std::cerr << "loading obj successfully" << std::endl;
 		}
-
-		if (!model::read_model("miku.pmd")) {
-			std::cerr << "model_tester::init:: read_model failed" << std::endl;
-		}
-		else {
-			std::cerr << "loading obj successfully" << std::endl;
-		}
 	}
 
 	void refresh() {
@@ -373,13 +366,13 @@ namespace model_tester {
 
 		glBindVertexArray(VAO);
 		
-			auto ptr = shader::get_shader_list().find("new_light");	//箱子
+			auto ptr = shader::get_shader_list().find("mesh_phong");	//箱子
 																	
 			if (ptr != shader::get_shader_list().end()) {
 				ptr->second.use();
 				auto program = ptr->second.getProgram();
 
-				box.Bind(program, "material.diffuse", "material.specular", "material.shininess");	//不能去掉，绑定了漫反射系数
+				//box.Bind(program, "material.diffuse", "material.specular", "material.shininess");	//不能去掉，绑定了漫反射系数
 				dirliggt.Bind(program, "dirLight.direction", "dirLight.ambient", "dirLight.diffuse", "dirLight.specular");
 
 				glUniform1i(glGetUniformLocation(program, "num_of_point_lights"), light::getPointLightNum());
@@ -423,7 +416,7 @@ namespace model_tester {
 
 		glBindVertexArray(0);
 		
-		ptr = shader::get_shader_list().find("new_light");
+		ptr = shader::get_shader_list().find("mesh_phong");
 
 		if (ptr != shader::get_shader_list().end()) {
 			ptr->second.use();
